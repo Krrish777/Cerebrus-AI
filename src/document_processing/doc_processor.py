@@ -3,10 +3,15 @@ import logging
 from datetime import datetime
 from core.logging import CustomLogger
 from haystack import Pipeline, component, Document
-from haystack.components.converters import PyPDFToDocument
+from haystack.components.converters import PyPDFToDocument, TextFileToDocument, MarkdownToDocument
 from haystack.components.preprocessors import DocumentCleaner, DocumentSplitter
 from haystack.components.writers import DocumentWriter
+from haystack.components.routers import FileTypeRouter
+from haystack.components.joiners import DocumentJoiner
 from typing import List, Dict, Any, Optional, Union
+import os
+import mimetypes
+from pathlib import Path
 
 # Configure logging with type safety
 try:
@@ -22,15 +27,20 @@ except Exception:
     logging.basicConfig(level=logging.INFO)
     logger = logging.getLogger(__name__)
 
-class PDFProcessor:
+class DocumentProcessor:
     """
-    Custom PDF Processor that converts, cleans, splits, and writes documents
-    with comprehensive logging at every step.
+    Universal Document Processor that handles multiple file types (PDF, text, markdown)
+    using FileTypeRouter for intelligent routing and comprehensive logging at every step.
+    
+    Supported formats:
+    - PDF files (.pdf)
+    - Text files (.txt, .text)
+    - Markdown files (.md, .markdown)
     """
     
     def __init__(self, chunk_size: int = 1000, chunk_overlap: int = 200):
         logger.info("=" * 60)
-        logger.info("INITIALIZING PDF PROCESSOR")
+        logger.info("INITIALIZING UNIVERSAL DOCUMENT PROCESSOR")
         logger.info("=" * 60)
         
         self.chunk_size = chunk_size
@@ -41,118 +51,181 @@ class PDFProcessor:
         logger.info(f"   • Chunk Overlap: {chunk_overlap} characters")
         logger.info(f"   • Overlap Percentage: {(chunk_overlap/chunk_size)*100:.1f}%")
         
-        logger.debug("📦 Initializing PyPDFToDocument converter...")
+        # Initialize file type router with supported MIME types
+        logger.info("🔧 Initializing FileTypeRouter...")
+        try:
+            self.file_type_router = FileTypeRouter(mime_types=[
+                "application/pdf",      # PDF files
+                "text/plain",          # Text files
+                "text/markdown"         # Markdown files
+            ])
+            logger.info("✅ FileTypeRouter initialized successfully")
+            logger.info("   • Supported types: PDF, Text, Markdown")
+        except Exception as e:
+            logger.error(f"❌ Failed to initialize FileTypeRouter: {e}")
+            raise
+        
+        # Initialize document converters
+        logger.info("📦 Initializing document converters...")
         try:
             self.pdf_converter = PyPDFToDocument()
-            logger.info("✅ PyPDFToDocument converter initialized successfully")
+            logger.info("✅ PyPDFToDocument converter initialized")
+            
+            self.text_converter = TextFileToDocument()
+            logger.info("✅ TextFileToDocument converter initialized")
+            
+            # Try to initialize markdown converter, fallback if dependencies missing
+            try:
+                self.markdown_converter = MarkdownToDocument()
+                logger.info("✅ MarkdownToDocument converter initialized")
+                self.markdown_supported = True
+            except ImportError as e:
+                logger.warning(f"⚠️  MarkdownToDocument not available: {e}")
+                logger.info("   • Markdown files will be processed as text files")
+                self.markdown_converter = None
+                self.markdown_supported = False
+            
         except Exception as e:
-            logger.error(f"❌ Failed to initialize PyPDFToDocument: {e}")
+            logger.error(f"❌ Failed to initialize document converters: {e}")
+            raise
+        
+        # Initialize document joiner
+        logger.info("🔗 Initializing DocumentJoiner...")
+        try:
+            self.document_joiner = DocumentJoiner()
+            logger.info("✅ DocumentJoiner initialized successfully")
+        except Exception as e:
+            logger.error(f"❌ Failed to initialize DocumentJoiner: {e}")
             raise
         
         # Initialize logger - use a shared instance to avoid multiple log files
         self._logger_instance = CustomLogger()
-        self.logger = self._logger_instance.get_logger(f"{__name__}.PDFProcessor")  # type: ignore
+        self.logger = self._logger_instance.get_logger(f"{__name__}.DocumentProcessor")  # type: ignore
         
-        logger.info("🚀 PDF Processor initialization completed successfully")
+        logger.info("🚀 Universal Document Processor initialization completed successfully")
         logger.info("-" * 60)
         
     @component.output_types(documents=List[Document])
     def run(self, sources: List[str]) -> Dict[str, List[Document]]:
         logger.info("\n" + "=" * 80)
-        logger.info("🚀 STARTING PDF PROCESSING PIPELINE")
+        logger.info("🚀 STARTING UNIVERSAL DOCUMENT PROCESSING PIPELINE")
         logger.info("=" * 80)
         
         logger.info(f"📋 INPUT ANALYSIS:")
         logger.info(f"   • Number of sources: {len(sources)}")
         logger.info(f"   • Source files: {sources}")
         
+        # Analyze file types
+        file_type_stats = self._analyze_file_types(sources)
+        
         for i, source in enumerate(sources, 1):
-            logger.info(f"   • Source {i}: '{source}'")
-            logger.info(f"     - Type: {type(source).__name__}")
-            logger.info(f"     - Length: {len(source)} characters")
+            file_type = self._detect_file_type(source)
+            file_size = self._get_file_size(source)
+            logger.info(f"   • Source {i}: '{os.path.basename(source)}'")
+            logger.info(f"     - Full path: {source}")
+            logger.info(f"     - Detected type: {file_type}")
+            logger.info(f"     - File size: {file_size}")
+        
+        logger.info(f"\n📊 FILE TYPE DISTRIBUTION:")
+        for file_type, count in file_type_stats.items():
+            logger.info(f"   • {file_type}: {count} files")
         
         if not sources:
-            logger.warning("⚠️  WARNING: No sources provided for PDF processing")
+            logger.warning("⚠️  WARNING: No sources provided for document processing")
             logger.info("📤 RETURNING: Empty documents list")
             return {'documents': []}
         
-        logger.info("\n📖 STEP 1: PDF CONVERSION")
+        logger.info("\n🔀 STEP 1: FILE TYPE ROUTING")
         logger.info("-" * 40)
-        logger.debug("🔧 Calling PyPDFToDocument.run()...")
+        logger.debug("🔧 Calling FileTypeRouter.run()...")
         
         try:
             start_time = datetime.now()
-            pdf_docs = self.pdf_converter.run(sources=sources)  # type: ignore
-            conversion_time = (datetime.now() - start_time).total_seconds()
+            routed_files = self.file_type_router.run(sources=sources) # type: ignore # type: ignore
+            routing_time = (datetime.now() - start_time).total_seconds()
             
-            logger.info(f"✅ PDF conversion completed successfully")
-            logger.info(f"   • Conversion time: {conversion_time:.2f} seconds")
-            logger.info(f"   • Raw documents extracted: {len(pdf_docs['documents'])}")
+            logger.info(f"✅ File routing completed successfully")
+            logger.info(f"   • Routing time: {routing_time:.2f} seconds")
             
-            # Detailed analysis of each converted document
-            for i, doc in enumerate(pdf_docs['documents'], 1):
-                doc_name = doc.meta.get('name', 'unknown')
-                page_num = doc.meta.get('page_number', 'unknown')
-                content_length = len(doc.content) if doc.content else 0
+            # Log routing results
+            pdf_files = routed_files.get('application/pdf', [])
+            text_files = routed_files.get('text/plain', [])
+            markdown_files = routed_files.get('text/markdown', [])
+            
+            logger.info(f"   • PDF files routed: {len(pdf_files)}")
+            logger.info(f"   • Text files routed: {len(text_files)}")
+            logger.info(f"   • Markdown files routed: {len(markdown_files)}")
+            
+            if pdf_files:
+                logger.debug(f"     PDF files: {[os.path.basename(f) for f in pdf_files]}") # type: ignore
+            if text_files:
+                logger.debug(f"     Text files: {[os.path.basename(f) for f in text_files]}") # type: ignore
+            if markdown_files:
+                logger.debug(f"     Markdown files: {[os.path.basename(f) for f in markdown_files]}") # type: ignore
                 
-                logger.info(f"   📄 Document {i}:")
-                logger.info(f"      - Name: {doc_name}")
-                logger.info(f"      - Page: {page_num}")
-                logger.info(f"      - Content length: {content_length:,} characters")
-                logger.info(f"      - Metadata keys: {list(doc.meta.keys())}")
-                
-                if content_length > 0:
-                    preview = (doc.content[:100] + "...") if len(doc.content) > 100 else doc.content
-                    logger.debug(f"      - Content preview: '{preview}'")
-                else:
-                    logger.warning(f"      ⚠️  Empty content for document {i}")
-        
         except Exception as e:
-            logger.error(f"❌ PDF conversion failed: {e}")
+            logger.error(f"❌ File routing failed: {e}")
             logger.error(f"   • Error type: {type(e).__name__}")
             raise
         
-        logger.info("\n🔄 STEP 2: SMART CHUNKING PROCESS")
+        # Process each file type
+        all_documents = []
+        
+        logger.info("\n📖 STEP 2: DOCUMENT CONVERSION")
         logger.info("-" * 40)
         
-        all_chunks = []
-        total_input_chars = 0
-        total_chunks_created = 0
-        
-        for doc_index, pdf_doc in enumerate(pdf_docs['documents'], 1):
-            doc_name = pdf_doc.meta.get('name', 'unknown')
-            page_num = pdf_doc.meta.get('page_number', 'unknown')
-            content_length = len(pdf_doc.content) if pdf_doc.content else 0
-            total_input_chars += content_length
+        # Process PDF files
+        if pdf_files:
+            logger.info(f"\n🔴 Processing {len(pdf_files)} PDF files...")
+            pdf_docs = self._process_pdf_files(pdf_files) # type: ignore
+            all_documents.extend(pdf_docs)
             
-            logger.info(f"\n📄 PROCESSING DOCUMENT {doc_index}/{len(pdf_docs['documents'])}")
-            logger.info(f"   • Document: {doc_name}")
-            logger.info(f"   • Page: {page_num}")
-            logger.info(f"   • Content length: {content_length:,} characters")
+        # Process text files
+        if text_files:
+            logger.info(f"\n📝 Processing {len(text_files)} text files...")
+            text_docs = self._process_text_files(text_files) # type: ignore
+            all_documents.extend(text_docs)
             
-            chunk_start_time = datetime.now()
-            page_chunks = self._create_smart_chunks(pdf_doc)
-            chunk_time = (datetime.now() - chunk_start_time).total_seconds()
-            
-            all_chunks.extend(page_chunks)
-            total_chunks_created += len(page_chunks)
-            
-            logger.info(f"✅ Document {doc_index} processing completed:")
-            logger.info(f"   • Chunks created: {len(page_chunks)}")
-            logger.info(f"   • Processing time: {chunk_time:.2f} seconds")
-            logger.info(f"   • Chunks/second: {len(page_chunks)/chunk_time:.1f}" if chunk_time > 0 else "   • Processing time: <0.01 seconds")
-            logger.info(f"   • Cumulative total chunks: {len(all_chunks)}")
-            
-            if len(page_chunks) > 0:
-                chunk_sizes = [len(chunk.content or "") for chunk in page_chunks]  # type: ignore
-                logger.info(f"   • Chunk sizes - Min: {min(chunk_sizes)}, Max: {max(chunk_sizes)}, Avg: {sum(chunk_sizes)/len(chunk_sizes):.1f}")
+        # Process markdown files
+        if markdown_files:
+            logger.info(f"\n📑 Processing {len(markdown_files)} markdown files...")
+            markdown_docs = self._process_markdown_files(markdown_files) # type: ignore
+            all_documents.extend(markdown_docs)
         
         # Final summary
-        processing_time = datetime.now()
-        
         logger.info("\n" + "=" * 80)
         logger.info("📊 PROCESSING SUMMARY")
         logger.info("=" * 80)
+        logger.info(f"✅ Universal document processing completed successfully")
+        logger.info(f"📈 STATISTICS:")
+        logger.info(f"   • Total files processed: {len(sources)}")
+        logger.info(f"   • Total documents/chunks created: {len(all_documents)}")
+        
+        if all_documents:
+            # Calculate statistics across all document types
+            all_chunk_sizes = [len(doc.content) for doc in all_documents if doc.content]
+            if all_chunk_sizes:
+                avg_chunk_size = sum(all_chunk_sizes) / len(all_chunk_sizes)
+                total_chars = sum(all_chunk_sizes)
+                
+                logger.info(f"   • Average chunk size: {avg_chunk_size:.1f} characters")
+                logger.info(f"   • Chunk size range: {min(all_chunk_sizes)} - {max(all_chunk_sizes)} characters")
+                logger.info(f"   • Total output characters: {total_chars:,}")
+                
+                # File type breakdown
+                type_counts = {}
+                for doc in all_documents:
+                    source_type = doc.meta.get('source_type', 'unknown')
+                    type_counts[source_type] = type_counts.get(source_type, 0) + 1
+                
+                logger.info(f"   • Document type breakdown:")
+                for doc_type, count in type_counts.items():
+                    logger.info(f"     - {doc_type}: {count} chunks")
+        
+        logger.info(f"🎯 RESULT: Returning {len(all_documents)} processed document chunks")
+        logger.info("=" * 80)
+        
+        return {'documents': all_documents}
         logger.info(f"✅ PDF processing completed successfully")
         logger.info(f"📈 STATISTICS:")
         logger.info(f"   • Total documents processed: {len(pdf_docs['documents'])}")
@@ -182,19 +255,22 @@ class PDFProcessor:
         
         return {'documents': all_chunks}
     
-    def _create_smart_chunks(self, pdf_doc: Document) -> List[Document]:
-        """Create smart chunks from PDF document with comprehensive logging."""
+    def _create_smart_chunks(self, document: Document) -> List[Document]:
+        """Create smart chunks from any document type with comprehensive logging."""
         
-        doc_name = pdf_doc.meta.get('name', 'unknown')
-        page_number = pdf_doc.meta.get('page_number', 1)
+        doc_name = document.meta.get('name', document.meta.get('source_file', 'unknown'))
+        page_number = document.meta.get('page_number', 1)
+        source_type = document.meta.get('source_type', 'unknown')
         
         logger.info(f"\n🔍 STARTING SMART CHUNKING")
         logger.info(f"   • Document: {doc_name}")
-        logger.info(f"   • Page: {page_number}")
+        logger.info(f"   • Type: {source_type}")
+        if source_type == 'pdf':
+            logger.info(f"   • Page: {page_number}")
         
         # Safely get text content
-        text = pdf_doc.content or ""
-        source_file = pdf_doc.meta.get('name', 'unknown')
+        text = document.content or ""
+        source_file = document.meta.get('name', document.meta.get('source_file', 'unknown'))
         
         logger.info(f"📊 CONTENT ANALYSIS:")
         logger.info(f"   • Raw text length: {len(text):,} characters")
@@ -312,7 +388,14 @@ class PDFProcessor:
                 
                 # Generate unique chunk ID
                 content_hash = hashlib.md5(chunk_text.encode()).hexdigest()[:8]
-                chunk_id = f"pdf_{chunk_index}_page{page_number}_{content_hash}"
+                if source_type == 'pdf':
+                    chunk_id = f"pdf_{chunk_index}_page{page_number}_{content_hash}"
+                elif source_type == 'text':
+                    chunk_id = f"text_{chunk_index}_{content_hash}"
+                elif source_type == 'markdown':
+                    chunk_id = f"md_{chunk_index}_{content_hash}"
+                else:
+                    chunk_id = f"doc_{chunk_index}_{content_hash}"
                 
                 logger.debug(f"   🔑 Generated chunk ID: {chunk_id}")
                 
@@ -320,8 +403,8 @@ class PDFProcessor:
                 chunk_metadata = {
                     # Source information
                     'source_file': source_file,
-                    'source_type': 'pdf',
-                    'page_number': page_number,
+                    'source_type': source_type,
+                    'page_number': page_number if source_type == 'pdf' else None,
                     
                     # Chunk identification
                     'chunk_index': chunk_index,
@@ -341,15 +424,15 @@ class PDFProcessor:
                     
                     # Processing metadata
                     'processed_timestamp': datetime.now().isoformat(),
-                    'processor_version': '2.0',
+                    'processor_version': '3.0',
                     'chunk_overlap': self.chunk_overlap,
                     'target_chunk_size': self.chunk_size,
                     
                     # Citation information
                     'citation': {
                         'source_file': source_file,
-                        'type': 'pdf',
-                        'page_number': page_number,
+                        'type': source_type,
+                        'page_number': page_number if source_type == 'pdf' else None,
                         'char_range': f"{start}-{end - 1}",
                         'chunk_id': chunk_id,
                         'extraction_method': 'smart_boundary_chunking'
@@ -362,7 +445,7 @@ class PDFProcessor:
                 }
                 
                 # Merge with original document metadata
-                final_metadata = pdf_doc.meta.copy()
+                final_metadata = document.meta.copy()
                 final_metadata.update(chunk_metadata)
                 
                 logger.debug(f"   📋 Metadata created with {len(final_metadata)} fields")
@@ -439,3 +522,141 @@ class PDFProcessor:
         logger.info(f"🎯 Returning {len(chunks)} chunks for further processing\n")
         
         return chunks
+    
+    def _analyze_file_types(self, sources: List[str]) -> Dict[str, int]:
+        """Analyze and count file types in the sources."""
+        stats = {}
+        for source in sources:
+            file_type = self._detect_file_type(source)
+            stats[file_type] = stats.get(file_type, 0) + 1
+        return stats
+    
+    def _detect_file_type(self, file_path: str) -> str:
+        """Detect file type based on extension and MIME type."""
+        path = Path(file_path)
+        extension = path.suffix.lower()
+        
+        if extension in ['.pdf']:
+            return 'PDF'
+        elif extension in ['.txt', '.text']:
+            return 'Text'
+        elif extension in ['.md', '.markdown']:
+            return 'Markdown'
+        else:
+            # Try MIME type detection
+            mime_type, _ = mimetypes.guess_type(file_path)
+            if mime_type:
+                if 'pdf' in mime_type:
+                    return 'PDF'
+                elif 'text' in mime_type:
+                    return 'Text'
+                elif 'markdown' in mime_type:
+                    return 'Markdown'
+            return 'Unknown'
+    
+    def _get_file_size(self, file_path: str) -> str:
+        """Get human-readable file size."""
+        try:
+            size_bytes = os.path.getsize(file_path)
+            if size_bytes < 1024:
+                return f"{size_bytes} bytes"
+            elif size_bytes < 1024 * 1024:
+                return f"{size_bytes / 1024:.1f} KB"
+            else:
+                return f"{size_bytes / (1024 * 1024):.1f} MB"
+        except OSError:
+            return "Unknown size"
+    
+    def _process_pdf_files(self, pdf_files: List[str]) -> List[Document]:
+        """Process PDF files and return documents."""
+        logger.info(f"📄 Converting {len(pdf_files)} PDF files...")
+        start_time = datetime.now()
+        
+        try:
+            pdf_docs = self.pdf_converter.run(sources=pdf_files) # type: ignore
+            conversion_time = (datetime.now() - start_time).total_seconds()
+            
+            logger.info(f"✅ PDF conversion completed")
+            logger.info(f"   • Conversion time: {conversion_time:.2f} seconds")
+            logger.info(f"   • Documents extracted: {len(pdf_docs['documents'])}")
+            
+            # Process chunks
+            all_chunks = []
+            for doc in pdf_docs['documents']:
+                chunks = self._create_smart_chunks(doc)
+                all_chunks.extend(chunks)
+                
+            logger.info(f"   • Total PDF chunks: {len(all_chunks)}")
+            return all_chunks
+            
+        except Exception as e:
+            logger.error(f"❌ PDF processing failed: {e}")
+            return []
+    
+    def _process_text_files(self, text_files: List[str]) -> List[Document]:
+        """Process text files and return documents."""
+        logger.info(f"📝 Converting {len(text_files)} text files...")
+        start_time = datetime.now()
+        
+        try:
+            text_docs = self.text_converter.run(sources=text_files) # type: ignore
+            conversion_time = (datetime.now() - start_time).total_seconds()
+            
+            logger.info(f"✅ Text conversion completed")
+            logger.info(f"   • Conversion time: {conversion_time:.2f} seconds")
+            logger.info(f"   • Documents extracted: {len(text_docs['documents'])}")
+            
+            # Process chunks
+            all_chunks = []
+            for doc in text_docs['documents']:
+                chunks = self._create_smart_chunks(doc)
+                all_chunks.extend(chunks)
+                
+            logger.info(f"   • Total text chunks: {len(all_chunks)}")
+            return all_chunks
+            
+        except Exception as e:
+            logger.error(f"❌ Text processing failed: {e}")
+            return []
+    
+    def _process_markdown_files(self, markdown_files: List[str]) -> List[Document]:
+        """Process markdown files and return documents."""
+        logger.info(f"📑 Converting {len(markdown_files)} markdown files...")
+        start_time = datetime.now()
+        
+        try:
+            if self.markdown_supported and self.markdown_converter:
+                # Use dedicated markdown converter
+                markdown_docs = self.markdown_converter.run(sources=markdown_files) # type: ignore
+                logger.info("✅ Markdown conversion completed using MarkdownToDocument")
+            else:
+                # Fallback to text converter
+                logger.info("ℹ️  Using TextFileToDocument as fallback for markdown files")
+                markdown_docs = self.text_converter.run(sources=markdown_files) # type: ignore
+                # Update metadata to reflect markdown type
+                for doc in markdown_docs['documents']:
+                    doc.meta['source_type'] = 'markdown'
+                    doc.meta['original_format'] = 'markdown'
+                    doc.meta['processed_as'] = 'text'
+            
+            conversion_time = (datetime.now() - start_time).total_seconds()
+            
+            logger.info(f"✅ Markdown conversion completed")
+            logger.info(f"   • Conversion time: {conversion_time:.2f} seconds")
+            logger.info(f"   • Documents extracted: {len(markdown_docs['documents'])}")
+            
+            # Process chunks
+            all_chunks = []
+            for doc in markdown_docs['documents']:
+                # Ensure source_type is set for markdown docs
+                if 'source_type' not in doc.meta:
+                    doc.meta['source_type'] = 'markdown'
+                chunks = self._create_smart_chunks(doc)
+                all_chunks.extend(chunks)
+                
+            logger.info(f"   • Total markdown chunks: {len(all_chunks)}")
+            return all_chunks
+            
+        except Exception as e:
+            logger.error(f"❌ Markdown processing failed: {e}")
+            return []

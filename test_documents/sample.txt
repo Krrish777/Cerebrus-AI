@@ -1,0 +1,8 @@
+This is a sample text file for testing the DocumentProcessor.
+        
+The processor should be able to handle this text file and chunk it appropriately.
+It contains multiple paragraphs and sentences that will be processed and split
+into intelligent chunks based on natural boundaries.
+
+This is another paragraph to demonstrate the chunking capabilities.
+The system should maintain context while creating manageable chunk sizes.
