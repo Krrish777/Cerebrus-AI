@@ -13,7 +13,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 try:
-    from haystack import Document
+    from haystack import Document # type: ignore
     from haystack.components.embedders import (
         SentenceTransformersDocumentEmbedder,
         SentenceTransformersTextEmbedder
@@ -23,13 +23,13 @@ except ImportError:
     HAYSTACK_AVAILABLE = False
     # Fallback Document class
     class Document:
-        def __init__(self, content: str, meta: Dict[str, Any] = None):
+        def __init__(self, content: str, meta: Dict[str, Any] = None): # type: ignore
             self.content = content
             self.meta = meta or {}
             self.embedding = None
 
 # Import CustomLogger
-from ..core.logging import CustomLogger
+from src.core.logging import CustomLogger
 
 # Initialize logger
 custom_logger = CustomLogger()
@@ -114,7 +114,7 @@ class EmbeddingGenerator:
             )
         
         try:
-            logger.info(f"🚀 Initializing embedding model: {self.model_name}")
+            logger.info(f"🚀 Initializing embedding model: {self.model_name}") # type: ignore # type: ignore
             
             # Initialize document embedder
             embedder_kwargs = {
@@ -130,7 +130,7 @@ class EmbeddingGenerator:
             if self.meta_fields_to_embed:
                 embedder_kwargs['meta_fields_to_embed'] = self.meta_fields_to_embed
             
-            self.document_embedder = SentenceTransformersDocumentEmbedder(**embedder_kwargs)
+            self.document_embedder = SentenceTransformersDocumentEmbedder(**embedder_kwargs) # type: ignore
             
             # Initialize text embedder (for queries)
             text_kwargs = {
@@ -142,10 +142,10 @@ class EmbeddingGenerator:
             if self.prefix:
                 text_kwargs['prefix'] = self.prefix
             
-            self.text_embedder = SentenceTransformersTextEmbedder(**text_kwargs)
+            self.text_embedder = SentenceTransformersTextEmbedder(**text_kwargs) # type: ignore
             
             # Warm up the models
-            logger.info("🔥 Warming up embedding models...")
+            logger.info("🔥 Warming up embedding models...") # type: ignore
             self.document_embedder.warm_up()
             self.text_embedder.warm_up()
             
@@ -153,13 +153,13 @@ class EmbeddingGenerator:
             test_result = self.text_embedder.run("test")
             self.embedding_dimension = len(test_result['embedding'])
             
-            logger.info(f"✅ Embedding models initialized successfully")
-            logger.info(f"📊 Model: {self.model_name}")
-            logger.info(f"📏 Embedding dimension: {self.embedding_dimension}")
-            logger.info(f"🖥️ Device: {self.device or 'auto'}")
+            logger.info(f"✅ Embedding models initialized successfully") # type: ignore
+            logger.info(f"📊 Model: {self.model_name}") # type: ignore
+            logger.info(f"📏 Embedding dimension: {self.embedding_dimension}") # type: ignore
+            logger.info(f"🖥️ Device: {self.device or 'auto'}") # type: ignore
             
         except Exception as e:
-            logger.error(f"❌ Failed to initialize embedding models: {e}")
+            logger.error(f"❌ Failed to initialize embedding models: {e}") # type: ignore
             raise
     
     def embed_documents(
@@ -176,14 +176,14 @@ class EmbeddingGenerator:
             List of EmbeddedDocument objects with embeddings
         """
         if not documents:
-            logger.warning("⚠️ No documents provided for embedding")
+            logger.warning("⚠️ No documents provided for embedding") # type: ignore
             return []
         
-        logger.info(f"🔗 Generating embeddings for {len(documents)} documents")
+        logger.info(f"🔗 Generating embeddings for {len(documents)} documents") # type: ignore
         
         try:
             # Generate embeddings using Haystack
-            result = self.document_embedder.run(documents)
+            result = self.document_embedder.run(documents) # type: ignore
             embedded_docs = result['documents']
             
             # Convert to EmbeddedDocument objects
@@ -196,17 +196,17 @@ class EmbeddingGenerator:
                         document=doc,
                         embedding=embedding_array,
                         embedding_model=self.model_name,
-                        embedding_dimension=self.embedding_dimension
+                        embedding_dimension=self.embedding_dimension # type: ignore
                     )
                     embedded_documents.append(embedded_doc)
                 else:
-                    logger.warning(f"⚠️ Document has no embedding: {doc.content[:50]}...")
+                    logger.warning(f"⚠️ Document has no embedding: {doc.content[:50]}...") # type: ignore
             
-            logger.info(f"✅ Successfully generated {len(embedded_documents)} embeddings")
+            logger.info(f"✅ Successfully generated {len(embedded_documents)} embeddings") # type: ignore
             return embedded_documents
             
         except Exception as e:
-            logger.error(f"❌ Error generating document embeddings: {e}")
+            logger.error(f"❌ Error generating document embeddings: {e}") # type: ignore
             raise
     
     def embed_query(self, query: str) -> np.ndarray:
@@ -222,17 +222,17 @@ class EmbeddingGenerator:
         if not query or not query.strip():
             raise ValueError("Query text cannot be empty")
         
-        logger.info(f"🔍 Generating query embedding for: '{query[:50]}{'...' if len(query) > 50 else ''}'")
+        logger.info(f"🔍 Generating query embedding for: '{query[:50]}{'...' if len(query) > 50 else ''}'") # type: ignore
         
         try:
-            result = self.text_embedder.run(query)
+            result = self.text_embedder.run(query) # type: ignore
             embedding = np.array(result['embedding'], dtype=np.float32)
             
-            logger.info(f"✅ Generated query embedding: {embedding.shape}")
+            logger.info(f"✅ Generated query embedding: {embedding.shape}") # type: ignore
             return embedding
             
         except Exception as e:
-            logger.error(f"❌ Error generating query embedding: {e}")
+            logger.error(f"❌ Error generating query embedding: {e}") # type: ignore
             raise
     
     def embed_texts(self, texts: List[str]) -> List[np.ndarray]:
@@ -248,7 +248,7 @@ class EmbeddingGenerator:
         if not texts:
             return []
         
-        logger.info(f"📝 Generating embeddings for {len(texts)} texts")
+        logger.info(f"📝 Generating embeddings for {len(texts)} texts") # type: ignore
         
         # Convert texts to documents
         documents = [Document(content=text) for text in texts]
@@ -259,7 +259,7 @@ class EmbeddingGenerator:
         # Extract embeddings
         embeddings = [doc.embedding for doc in embedded_docs]
         
-        logger.info(f"✅ Generated {len(embeddings)} text embeddings")
+        logger.info(f"✅ Generated {len(embeddings)} text embeddings") # type: ignore
         return embeddings
     
     def batch_embed_documents(
@@ -275,24 +275,24 @@ class EmbeddingGenerator:
         Returns:
             List of embedded document batches
         """
-        logger.info(f"📦 Processing {len(document_batches)} document batches")
+        logger.info(f"📦 Processing {len(document_batches)} document batches") # type: ignore
         
         all_embedded_batches = []
         
         for i, batch in enumerate(document_batches):
-            logger.info(f"📦 Processing batch {i+1}/{len(document_batches)} ({len(batch)} documents)")
+            logger.info(f"📦 Processing batch {i+1}/{len(document_batches)} ({len(batch)} documents)") # type: ignore
             
             try:
                 embedded_batch = self.embed_documents(batch)
                 all_embedded_batches.append(embedded_batch)
                 
             except Exception as e:
-                logger.error(f"❌ Error processing batch {i+1}: {e}")
+                logger.error(f"❌ Error processing batch {i+1}: {e}") # type: ignore
                 # Continue with other batches
                 all_embedded_batches.append([])
         
         total_docs = sum(len(batch) for batch in all_embedded_batches)
-        logger.info(f"✅ Batch processing complete: {total_docs} documents embedded")
+        logger.info(f"✅ Batch processing complete: {total_docs} documents embedded") # type: ignore
         
         return all_embedded_batches
     
@@ -337,7 +337,7 @@ class EmbeddingGenerator:
             doc = Document(content=text, meta=meta)
             documents.append(doc)
         
-        logger.info(f"📄 Created {len(documents)} documents from texts")
+        logger.info(f"📄 Created {len(documents)} documents from texts") # type: ignore
         return documents
 
 

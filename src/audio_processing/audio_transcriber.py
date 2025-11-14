@@ -9,7 +9,7 @@ import io
 
 from haystack import component, Document
 from haystack.core.serialization import default_from_dict, default_to_dict
-from core.logging import CustomLogger
+from src.core.logging import CustomLogger
 
 try:
     import assemblyai as aai
@@ -23,7 +23,7 @@ import logging
 from typing import Union, Any
 
 try:
-    from core.logging import CustomLogger
+    from src.core.logging import CustomLogger
     _logger_instance = CustomLogger()
     _temp_logger = _logger_instance.get_logger(__name__)
     if _temp_logger is not None:

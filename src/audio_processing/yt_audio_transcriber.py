@@ -26,11 +26,11 @@ except ImportError:
 
 from haystack import component, Document
 from .audio_transcriber import AssemblyAITranscriber, AudioProcessingConfig
-from core.logging import CustomLogger
+from src.core.logging import CustomLogger
 
 # Configure logging with type safety
 try:
-    from core.logging import CustomLogger
+    from src.core.logging import CustomLogger
     _logger_instance = CustomLogger()
     _temp_logger = _logger_instance.get_logger(__name__)
     if _temp_logger is not None:

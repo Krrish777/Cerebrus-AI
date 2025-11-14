@@ -1,7 +1,7 @@
 import hashlib
 import logging
 from datetime import datetime
-from core.logging import CustomLogger
+from src.core.logging import CustomLogger
 from haystack import Pipeline, component, Document
 from haystack.components.converters import PyPDFToDocument, TextFileToDocument, MarkdownToDocument
 from haystack.components.preprocessors import DocumentCleaner, DocumentSplitter
@@ -15,7 +15,7 @@ from pathlib import Path
 
 # Configure logging with type safety
 try:
-    from core.logging import CustomLogger
+    from src.core.logging import CustomLogger
     _logger_instance = CustomLogger()
     _temp_logger = _logger_instance.get_logger(__name__)
     if _temp_logger is not None:
