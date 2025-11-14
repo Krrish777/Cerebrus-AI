@@ -243,7 +243,7 @@ class AssemblyAITranscriber:
         # Custom vocabulary
         try:
             if self.config.custom_spelling and hasattr(config, 'set_custom_spelling'):
-                config.set_custom_spelling(self.config.custom_spelling)
+                config.set_custom_spelling(self.config.custom_spelling) # type: ignore
                 logger.debug(f"Custom spelling set: {list(self.config.custom_spelling.keys())}")
             
             if self.config.custom_vocabulary and hasattr(config, 'word_boost'):
@@ -251,7 +251,7 @@ class AssemblyAITranscriber:
                 logger.debug(f"Custom vocabulary set: {len(self.config.custom_vocabulary)} words")
                 
                 if hasattr(aai, 'BoostParam') and hasattr(config, 'boost_param'):
-                    boost_param = getattr(aai.BoostParam, self.config.boost_param, self.config.boost_param)
+                    boost_param = getattr(aai.BoostParam, self.config.boost_param, self.config.boost_param) # type: ignore
                     setattr(config, 'boost_param', boost_param)
                     logger.debug(f"Boost param set: {self.config.boost_param}")
         except Exception as e:
@@ -443,7 +443,7 @@ class AssemblyAITranscriber:
                 if new_structured_count > 0:
                     logger.info(f"Created {new_structured_count} additional structured documents (sentences/paragraphs)")
                 
-                total_docs_for_source = len(documents) - len(documents_before_source) if 'documents_before_source' in locals() else len(documents)
+                total_docs_for_source = len(documents) - documents_before_source
                 logger.info(f"Successfully transcribed {source_name} - Generated {total_docs_for_source} documents total")
                 
             except Exception as e:
