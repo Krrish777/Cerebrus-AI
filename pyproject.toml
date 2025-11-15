@@ -26,5 +26,6 @@ dependencies = [
     "sentence-transformers>=5.1.2",
     "streamlit>=1.51.0",
     "structlog>=25.5.0",
+    "websockets>=15.0.1",
     "yt-dlp>=2025.11.12",
 ]

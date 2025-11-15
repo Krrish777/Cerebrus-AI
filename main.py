@@ -24,6 +24,7 @@ from src.embeddings.embedding_generator import EmbeddingGenerator
 from src.audio_processing.audio_transcriber import AssemblyAITranscriber, AudioProcessingConfig
 from src.audio_processing.yt_audio_transcriber import YouTubeAudioTranscriber, create_youtube_transcription_pipeline
 from src.web_scraping.firecrawl_only import SimpleWebScraper
+from src.conversational_ai.streamlit_agora import render_agora_interface
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -604,8 +605,16 @@ def main():
     col1, col2 = st.columns([3, 1])
     
     with col1:
-        # Chat interface
-        render_chat_interface()
+        # Create tabs for different features
+        tab1, tab2 = st.tabs(["💬 Text Chat", "🎙️ Voice Chat"])
+        
+        with tab1:
+            # Chat interface
+            render_chat_interface()
+        
+        with tab2:
+            # Agora Conversational AI interface
+            render_agora_interface(st.session_state.rag_generator)
     
     with col2:
         # Control panel

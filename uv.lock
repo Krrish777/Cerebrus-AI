@@ -255,6 +255,7 @@ dependencies = [
     { name = "sentence-transformers" },
     { name = "streamlit" },
     { name = "structlog" },
+    { name = "websockets" },
     { name = "yt-dlp" },
 ]
 
@@ -281,6 +282,7 @@ requires-dist = [
     { name = "sentence-transformers", specifier = ">=5.1.2" },
     { name = "streamlit", specifier = ">=1.51.0" },
     { name = "structlog", specifier = ">=25.5.0" },
+    { name = "websockets", specifier = ">=15.0.1" },
     { name = "yt-dlp", specifier = ">=2025.11.12" },
 ]
 
