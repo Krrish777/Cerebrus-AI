@@ -63,7 +63,7 @@ def test_rag_initialization():
         rag_generator = create_rag_generator(
             elasticsearch_host="localhost:9200",  # Will fallback to InMemory if unavailable
             gemini_api_key=os.getenv("GEMINI_API_KEY"),
-            model_name="gemini-1.5-flash",
+            model_name="gemini-2.0-flash",
             retrieval_top_k=10,
             ranking_top_k=5
         )

@@ -22,11 +22,11 @@ def check_api_key():
         
     print(f"✅ API Key found: {gemini_api_key[:10]}...")
     
-    # Test different models to see which ones work
+    # Test different models to see which ones work  
     models_to_test = [
-        "gemini-1.5-pro",
-        "gemini-1.5-flash", 
-        "gemini-2.0-flash",
+        "gemini-2.0-flash",  # Latest default model
+        "gemini-1.5-pro-latest",
+        "gemini-1.5-flash-latest", 
         "gemini-pro"
     ]
     

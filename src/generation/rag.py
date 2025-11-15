@@ -76,7 +76,7 @@ class ElasticsearchRAGGenerator:
         elasticsearch_host: str = "localhost:9200",
         elasticsearch_index: str = "cerebrus_documents",
         gemini_api_key: Optional[str] = None,
-        model_name: str = "gemini-1.5-flash",
+        model_name: str = "gemini-2.0-flash",
         ranker_model: str = "Xenova/ms-marco-MiniLM-L-6-v2",
         retrieval_top_k: int = 20,
         ranking_top_k: int = 8,
@@ -147,10 +147,33 @@ class ElasticsearchRAGGenerator:
         if not api_key:
             raise ValueError("Gemini API key is required. Set GEMINI_API_KEY environment variable or pass gemini_api_key parameter.")
         
-        self.generator = GoogleGenAIChatGenerator(
-            model=model_name,
-            api_key=Secret.from_token(api_key)
-        )
+        # Use supported model names from Haystack documentation
+        supported_models = [
+            "gemini-2.0-flash",  # Latest default model
+            "gemini-1.5-pro-latest",  # Fallback option
+            "gemini-1.5-flash-latest",  # Alternative Flash model
+            "gemini-pro"  # Final fallback
+        ]
+        
+        # If user provided an old model name, update it
+        if model_name == "gemini-1.5-flash":
+            model_name = "gemini-2.0-flash"
+            logger.info(f"Updated deprecated model name to {model_name}")
+        
+        # Try to initialize with the specified model, with fallbacks
+        for attempt_model in [model_name] + [m for m in supported_models if m != model_name]:
+            try:
+                self.generator = GoogleGenAIChatGenerator(
+                    model=attempt_model,
+                    api_key=Secret.from_token(api_key)
+                )
+                logger.info(f"✅ Successfully initialized GoogleGenAIChatGenerator with model: {attempt_model}")
+                break
+            except Exception as model_error:
+                logger.warning(f"Failed to initialize with {attempt_model}: {model_error}")
+                if attempt_model == supported_models[-1]:  # Last model in list
+                    raise ValueError(f"Failed to initialize with any supported Gemini model. Last error: {model_error}")
+                continue
         
         # Initialize prompt builder
         self.chat_prompt_builder = ChatPromptBuilder()
@@ -294,7 +317,7 @@ class ElasticsearchRAGGenerator:
             if not replies:
                 response_text = "I couldn't generate a response. Please try rephrasing your question."
             else:
-                response_text = replies[0].content or "No response generated."  # Use .content for ChatMessage
+                response_text = replies[0].text or "No response generated."  # Use .text for ChatMessage
             
             # Step 5: Extract sources info
             sources_info = self._extract_sources_info(ranked_docs)
@@ -442,6 +465,10 @@ def create_rag_generator(
     **kwargs
 ) -> ElasticsearchRAGGenerator:
     """Factory function to create a configured RAG generator."""
+    # Set default model if not provided in kwargs
+    if 'model_name' not in kwargs:
+        kwargs['model_name'] = "gemini-2.0-flash"
+    
     return ElasticsearchRAGGenerator(
         elasticsearch_host=elasticsearch_host,
         gemini_api_key=gemini_api_key,
@@ -464,7 +491,7 @@ if __name__ == "__main__":
         rag_generator = create_rag_generator(
             elasticsearch_host="localhost:9200",
             gemini_api_key=gemini_key,
-            model_name="gemini-1.5-flash"
+            model_name="gemini-2.0-flash"
         )
         
         print("RAG Generator initialized successfully!")
