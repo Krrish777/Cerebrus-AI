@@ -158,12 +158,8 @@ class ElasticsearchRAGGenerator:
         # Build the pipeline
         self._build_pipeline()
         
-        # Warm up components
-        try:
-            self.ranker.warm_up()
-            logger.info("Components warmed up successfully")
-        except Exception as e:
-            logger.warning(f"Component warm-up failed: {e}")
+        # Warm up components with robust error handling
+        self._warm_up_components()
         
         logger.info(f"ElasticsearchRAGGenerator initialized with {model_name}")
     
@@ -181,6 +177,20 @@ class ElasticsearchRAGGenerator:
         self.pipeline.connect("retriever.documents", "ranker.documents")
         
         logger.info("RAG pipeline built successfully")
+    
+    def _warm_up_components(self):
+        """Warm up all components with proper error handling"""
+        try:
+            # Warm up ranker (FastembedRanker)
+            if hasattr(self.ranker, 'warm_up'):
+                self.ranker.warm_up()
+                logger.info("Ranker warmed up successfully")
+                
+            logger.info("All components warmed up successfully")
+            
+        except Exception as e:
+            logger.warning(f"Component warm-up failed: {e}")
+            logger.info("System will continue with cold start - first queries may be slower")
     
     def add_documents(self, documents: List[Dict[str, Any]]) -> bool:
         """Add documents to the document store."""
@@ -232,11 +242,19 @@ class ElasticsearchRAGGenerator:
         try:
             logger.info(f"Generating response for: '{query[:50]}...'")
             
+            # Ranker should already be warmed up from initialization
+            # If not, it will be handled gracefully by the ranker itself
+            
             # Step 1: Retrieve documents
-            retrieval_result = self.retriever.run(
-                query=query,
-                filters=filters or {}
-            )
+            # Note: InMemoryBM25Retriever may not support filters parameter
+            try:
+                retrieval_result = self.retriever.run(
+                    query=query,
+                    filters=filters or {}
+                )
+            except TypeError:
+                # Fallback for retrievers that don't support filters
+                retrieval_result = self.retriever.run(query=query)
             retrieved_docs = retrieval_result.get("documents", [])
             
             if not retrieved_docs:
@@ -249,10 +267,14 @@ class ElasticsearchRAGGenerator:
                 )
             
             # Step 2: Rank documents
-            ranking_result = self.ranker.run(
-                query=query,
-                documents=retrieved_docs
-            )
+            try:
+                ranking_result = self.ranker.run(
+                    query=query,
+                    documents=retrieved_docs
+                )
+            except Exception as rank_error:
+                logger.warning(f"Ranking failed: {rank_error}, using retrieved docs directly")
+                ranking_result = {"documents": retrieved_docs}
             ranked_docs = ranking_result.get("documents", [])
             
             # Step 3: Build context and prompt
@@ -272,7 +294,7 @@ class ElasticsearchRAGGenerator:
             if not replies:
                 response_text = "I couldn't generate a response. Please try rephrasing your question."
             else:
-                response_text = replies[0].text or "No response generated."  # Use .text instead of .content
+                response_text = replies[0].content or "No response generated."  # Use .content for ChatMessage
             
             # Step 5: Extract sources info
             sources_info = self._extract_sources_info(ranked_docs)
@@ -359,19 +381,27 @@ The context documents are numbered and you should reference them accordingly."""
             search_top_k = top_k or self.ranking_top_k
             
             # Retrieve documents
-            retrieval_result = self.retriever.run(
-                query=query,
-                filters=filters or {}
-            )
+            try:
+                retrieval_result = self.retriever.run(
+                    query=query,
+                    filters=filters or {}
+                )
+            except TypeError:
+                # Fallback for retrievers that don't support filters
+                retrieval_result = self.retriever.run(query=query)
             documents = retrieval_result.get("documents", [])
             
             if documents and len(documents) > 0:
                 # Rank documents
-                ranking_result = self.ranker.run(
-                    query=query,
-                    documents=documents
-                )
-                ranked_docs = ranking_result.get("documents", [])[:search_top_k]
+                try:
+                    ranking_result = self.ranker.run(
+                        query=query,
+                        documents=documents
+                    )
+                    ranked_docs = ranking_result.get("documents", [])[:search_top_k]
+                except Exception as rank_error:
+                    logger.warning(f"Ranking failed: {rank_error}, using retrieved docs directly")
+                    ranked_docs = documents[:search_top_k]
             else:
                 ranked_docs = []
             

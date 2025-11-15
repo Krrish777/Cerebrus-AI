@@ -31,13 +31,9 @@ from src.conversational_ai.agora_ai import (
     create_default_agent_config
 )
 
-# Page configuration
-st.set_page_config(
-    page_title="Cerebrus AI Voice Chat",
-    page_icon="🎙️",
-    layout="wide",
-    initial_sidebar_state="collapsed"
-)
+# NOTE: page config is provided by the main app (`main.py`).
+# Do not call `st.set_page_config` here so this module can be imported
+# and its `render_voice_interface` function can be used inside the main Streamlit app.
 
 # Custom CSS for a modern look
 st.markdown("""
@@ -547,16 +543,20 @@ Use the Agora Web SDK or mobile app to join this channel and start talking!
             """)
 
 
-def main():
-    """Main application entry point"""
-    
-    # Load environment variables
-    from dotenv import load_dotenv
-    load_dotenv()
-    
+def render_voice_interface(rag_generator: Optional[object] = None):
+    """Render the voice chat UI from the main app.
+
+    Call this from the main Streamlit app and pass the initialized
+    `rag_generator` (optional). This keeps `simple_voice_app_with_rag.py`
+    importable without running a standalone Streamlit page.
+    """
+    # If a RAG generator is provided by the main app, store it in session
+    if rag_generator is not None:
+        st.session_state.rag_generator = rag_generator
+
     app = SimplifiedAgoraInterface()
     app.render_main_interface()
-    
+
     # Footer
     st.markdown("---")
     st.markdown("""
@@ -564,7 +564,3 @@ def main():
         <p>🚀 Powered by Cerebrus AI • Agora • ElevenLabs • Ares ASR • OpenAI</p>
     </div>
     """, unsafe_allow_html=True)
-
-
-if __name__ == "__main__":
-    main()
