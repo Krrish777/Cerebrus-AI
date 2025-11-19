@@ -72,12 +72,12 @@ def test_web_scraping():
             # Extract content
             if 'markdown' in result:
                 content = result['markdown']
-                print(f"📄 Content type: markdown")
+                print("📄 Content type: markdown")
                 print(f"📏 Content length: {len(content)} characters")
                 print(f"📝 Content preview: {content[:200]}...")
             elif 'content' in result:
                 content = result['content'] 
-                print(f"📄 Content type: content")
+                print("📄 Content type: content")
                 print(f"📏 Content length: {len(content)} characters")
                 print(f"📝 Content preview: {content[:200]}...")
             
@@ -101,7 +101,7 @@ def test_web_scraping():
                 print(f"🏷️ Metadata: {result.metadata}")
         
         # Test with a more interesting URL
-        print(f"\n🔗 Testing with content-rich URL...")
+        print("\n🔗 Testing with content-rich URL...")
         blog_url = "https://firecrawl.dev"
         result2 = app.scrape(blog_url)
         

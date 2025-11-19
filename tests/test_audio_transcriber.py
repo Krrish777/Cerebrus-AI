@@ -17,10 +17,7 @@ import pytest
 import os
 import sys
 from pathlib import Path
-from unittest.mock import Mock, patch, MagicMock
-from typing import List, Dict, Any
-import tempfile
-import json
+from unittest.mock import Mock, patch
 
 # Add src to Python path
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
@@ -30,8 +27,7 @@ from audio_processing.audio_transcriber import (
     AssemblyAITranscriber,
     SmartAudioProcessor,
     create_audio_pipeline,
-    create_advanced_audio_config,
-    ASSEMBLYAI_AVAILABLE
+    create_advanced_audio_config
 )
 from haystack import Document
 

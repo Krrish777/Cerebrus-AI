@@ -9,9 +9,8 @@ import asyncio
 import os
 import time
 import requests
-import json
 import tempfile
-from typing import Dict, Optional, List
+from typing import Optional
 from datetime import datetime
 from pathlib import Path
 
@@ -22,8 +21,7 @@ from src.conversational_ai.agora_ai import (
     TTSConfig,
     ASRConfig,
     TurnDetectionConfig,
-    AgoraCredentials,
-    create_default_agent_config
+    AgoraCredentials
 )
 
 # Page configuration
@@ -111,7 +109,7 @@ class SimplifiedAgoraInterface:
         if missing_vars:
             st.error(f"❌ Missing environment variables: {', '.join(missing_vars)}")
             with st.expander("🔧 Setup Instructions"):
-                st.markdown(f"""
+                st.markdown("""
                 Please set these environment variables in your `.env` file:
                 
                 ```
@@ -296,7 +294,7 @@ class SimplifiedAgoraInterface:
                 st.session_state.current_agent_id = agent_id
                 st.session_state.agent_status = "running"
                 st.success(f"✅ Voice conversation started! Agent ID: {agent_id}")
-                st.info(f"📱 **Join the conversation:**")
+                st.info("📱 **Join the conversation:**")
                 st.code(f"""
 Channel: {agent_config.channel}
 App ID: {os.getenv('AGORA_APP_ID')}

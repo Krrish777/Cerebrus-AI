@@ -6,10 +6,9 @@ for intelligent content extraction from websites.
 """
 
 import os
-from typing import List, Dict, Any, Optional, Union
+from typing import List, Dict, Any, Optional
 from dataclasses import dataclass
-from pathlib import Path
-from urllib.parse import urlparse, urljoin
+from urllib.parse import urlparse
 import time
 from datetime import datetime
 
@@ -19,7 +18,6 @@ except ImportError:
     from firecrawl import Firecrawl as FirecrawlApp
 
 from haystack import Document
-from ..core.logging import CustomLogger
 
 # Initialize logger with robust fallback
 def _get_logger():
@@ -494,7 +492,7 @@ if __name__ == "__main__":
         print(f"\n🚀 Scraping: {test_url}")
         documents = scraper.scrape_url(test_url)
         
-        print(f"\n📊 Scraping Results:")
+        print("\n📊 Scraping Results:")
         print(f"   📄 Generated {len(documents)} documents")
         
         # Show sample documents
@@ -506,7 +504,7 @@ if __name__ == "__main__":
             print(f"   📊 Word Count: {doc.meta.get('chunk_word_count', 'N/A')}")
             print(f"   🏷️ Domain: {doc.meta.get('domain', 'N/A')}")
         
-        print(f"\n✅ Web scraper test completed successfully!")
+        print("\n✅ Web scraper test completed successfully!")
         
     except Exception as e:
         print(f"❌ Test failed: {e}")

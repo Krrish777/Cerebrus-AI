@@ -10,7 +10,6 @@ import sys
 import subprocess
 import time
 import requests
-import signal
 from pathlib import Path
 from dotenv import load_dotenv
 

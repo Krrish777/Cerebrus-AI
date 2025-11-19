@@ -6,7 +6,6 @@ Demonstrates YouTube video transcription with AssemblyAI integration.
 
 import os
 import sys
-from pathlib import Path
 
 # Add the src directory to the path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
@@ -137,8 +136,8 @@ def test_youtube_transcription():
         result = transcriber.run(sources=test_urls)
         documents = result["documents"]
         
-        print(f"\n🎉 Transcription completed successfully!")
-        print(f"📊 Results Summary:")
+        print("\n🎉 Transcription completed successfully!")
+        print("📊 Results Summary:")
         print(f"   • Total documents generated: {len(documents)}")
         
         # Analyze document types
@@ -147,7 +146,7 @@ def test_youtube_transcription():
             content_type = doc.meta.get('content_type', 'unknown')
             doc_types[content_type] = doc_types.get(content_type, 0) + 1
         
-        print(f"   • Document type breakdown:")
+        print("   • Document type breakdown:")
         for doc_type, count in doc_types.items():
             print(f"     - {doc_type}: {count}")
         
@@ -155,7 +154,7 @@ def test_youtube_transcription():
         main_docs = [doc for doc in documents if doc.meta.get('content_type') == 'main_transcript']
         if main_docs:
             main_doc = main_docs[0]
-            print(f"\n📄 Main Transcript Preview:")
+            print("\n📄 Main Transcript Preview:")
             print(f"   • Video: {main_doc.meta.get('video_title', 'Unknown')}")
             print(f"   • Channel: {main_doc.meta.get('channel_name', 'Unknown')}")
             print(f"   • Duration: {main_doc.meta.get('video_info', {}).get('duration_seconds', 'Unknown')}s")
@@ -171,7 +170,7 @@ def test_youtube_transcription():
             
             # Show metadata highlights
             metadata = main_doc.meta
-            print(f"\n📈 Analysis Results:")
+            print("\n📈 Analysis Results:")
             
             if 'sentiment_analysis' in metadata:
                 sentiment_count = len(metadata['sentiment_analysis'])
@@ -190,7 +189,7 @@ def test_youtube_transcription():
                 highlight_count = len(metadata['highlights'])
                 print(f"   • Auto Highlights: {highlight_count} key moments")
         
-        print(f"\n✅ YouTube transcription test completed successfully!")
+        print("\n✅ YouTube transcription test completed successfully!")
         
     except Exception as e:
         print(f"\n❌ Transcription test failed: {e}")

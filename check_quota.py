@@ -58,7 +58,7 @@ def check_api_key():
         import time
         time.sleep(5)
     
-    print(f"\n📊 Summary:")
+    print("\n📊 Summary:")
     print(f"Working models: {working_models}")
     print(f"Total working: {len(working_models)}")
     

@@ -174,7 +174,7 @@ def test_with_microsoft_tts():
     print("=" * 50)
     print(f"Agent Name: {payload['name']}")
     print(f"Channel: {payload['properties']['channel']}")
-    print(f"TTS: Microsoft Azure")
+    print("TTS: Microsoft Azure")
     print()
     
     # Make request

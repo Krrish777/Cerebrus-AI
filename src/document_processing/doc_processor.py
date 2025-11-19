@@ -2,13 +2,11 @@ import hashlib
 import logging
 from datetime import datetime
 from src.core.logging import CustomLogger
-from haystack import Pipeline, component, Document
+from haystack import component, Document
 from haystack.components.converters import PyPDFToDocument, TextFileToDocument, MarkdownToDocument
-from haystack.components.preprocessors import DocumentCleaner, DocumentSplitter
-from haystack.components.writers import DocumentWriter
 from haystack.components.routers import FileTypeRouter
 from haystack.components.joiners import DocumentJoiner
-from typing import List, Dict, Any, Optional, Union
+from typing import List, Dict
 import os
 import mimetypes
 from pathlib import Path
@@ -46,7 +44,7 @@ class DocumentProcessor:
         self.chunk_size = chunk_size
         self.chunk_overlap = chunk_overlap
         
-        logger.info(f"🔧 Configuration Parameters:")
+        logger.info("🔧 Configuration Parameters:")
         logger.info(f"   • Chunk Size: {chunk_size} characters")
         logger.info(f"   • Chunk Overlap: {chunk_overlap} characters")
         logger.info(f"   • Overlap Percentage: {(chunk_overlap/chunk_size)*100:.1f}%")
@@ -111,7 +109,7 @@ class DocumentProcessor:
         logger.info("🚀 STARTING UNIVERSAL DOCUMENT PROCESSING PIPELINE")
         logger.info("=" * 80)
         
-        logger.info(f"📋 INPUT ANALYSIS:")
+        logger.info("📋 INPUT ANALYSIS:")
         logger.info(f"   • Number of sources: {len(sources)}")
         logger.info(f"   • Source files: {sources}")
         
@@ -126,7 +124,7 @@ class DocumentProcessor:
             logger.info(f"     - Detected type: {file_type}")
             logger.info(f"     - File size: {file_size}")
         
-        logger.info(f"\n📊 FILE TYPE DISTRIBUTION:")
+        logger.info("\n📊 FILE TYPE DISTRIBUTION:")
         for file_type, count in file_type_stats.items():
             logger.info(f"   • {file_type}: {count} files")
         
@@ -144,7 +142,7 @@ class DocumentProcessor:
             routed_files = self.file_type_router.run(sources=sources) # type: ignore # type: ignore
             routing_time = (datetime.now() - start_time).total_seconds()
             
-            logger.info(f"✅ File routing completed successfully")
+            logger.info("✅ File routing completed successfully")
             logger.info(f"   • Routing time: {routing_time:.2f} seconds")
             
             # Log routing results
@@ -196,8 +194,8 @@ class DocumentProcessor:
         logger.info("\n" + "=" * 80)
         logger.info("📊 PROCESSING SUMMARY")
         logger.info("=" * 80)
-        logger.info(f"✅ Universal document processing completed successfully")
-        logger.info(f"📈 STATISTICS:")
+        logger.info("✅ Universal document processing completed successfully")
+        logger.info("📈 STATISTICS:")
         logger.info(f"   • Total files processed: {len(sources)}")
         logger.info(f"   • Total documents/chunks created: {len(all_documents)}")
         
@@ -218,7 +216,7 @@ class DocumentProcessor:
                     source_type = doc.meta.get('source_type', 'unknown')
                     type_counts[source_type] = type_counts.get(source_type, 0) + 1
                 
-                logger.info(f"   • Document type breakdown:")
+                logger.info("   • Document type breakdown:")
                 for doc_type, count in type_counts.items():
                     logger.info(f"     - {doc_type}: {count} chunks")
         
@@ -226,8 +224,8 @@ class DocumentProcessor:
         logger.info("=" * 80)
         
         return {'documents': all_documents}
-        logger.info(f"✅ PDF processing completed successfully")
-        logger.info(f"📈 STATISTICS:")
+        logger.info("✅ PDF processing completed successfully")
+        logger.info("📈 STATISTICS:")
         logger.info(f"   • Total documents processed: {len(pdf_docs['documents'])}")
         logger.info(f"   • Total input characters: {total_input_chars:,}")
         logger.info(f"   • Total chunks created: {len(all_chunks)}")
@@ -262,7 +260,7 @@ class DocumentProcessor:
         page_number = document.meta.get('page_number', 1)
         source_type = document.meta.get('source_type', 'unknown')
         
-        logger.info(f"\n🔍 STARTING SMART CHUNKING")
+        logger.info("\n🔍 STARTING SMART CHUNKING")
         logger.info(f"   • Document: {doc_name}")
         logger.info(f"   • Type: {source_type}")
         if source_type == 'pdf':
@@ -272,12 +270,12 @@ class DocumentProcessor:
         text = document.content or ""
         source_file = document.meta.get('name', document.meta.get('source_file', 'unknown'))
         
-        logger.info(f"📊 CONTENT ANALYSIS:")
+        logger.info("📊 CONTENT ANALYSIS:")
         logger.info(f"   • Raw text length: {len(text):,} characters")
         logger.info(f"   • Source file: {source_file}")
         
         if not text.strip():
-            logger.warning(f"⚠️  WARNING: No text content found")
+            logger.warning("⚠️  WARNING: No text content found")
             logger.warning(f"   • Page {page_number} of {source_file} is empty or whitespace only")
             return []
         
@@ -287,7 +285,7 @@ class DocumentProcessor:
         sentences = text.split('.')
         paragraphs = text.split('\n\n')
         
-        logger.info(f"📈 TEXT STATISTICS:")
+        logger.info("📈 TEXT STATISTICS:")
         logger.info(f"   • Lines: {len(lines):,}")
         logger.info(f"   • Words: {len(words):,}")
         logger.info(f"   • Sentences (approx): {len(sentences):,}")
@@ -299,7 +297,7 @@ class DocumentProcessor:
         logger.debug(f"📖 TEXT PREVIEW: '{text_preview}'")
         
         # Chunking configuration
-        logger.info(f"\n⚙️ CHUNKING CONFIGURATION:")
+        logger.info("\n⚙️ CHUNKING CONFIGURATION:")
         logger.info(f"   • Target chunk size: {self.chunk_size:,} characters")
         logger.info(f"   • Overlap: {self.chunk_overlap:,} characters ({(self.chunk_overlap/self.chunk_size)*100:.1f}%)")
         logger.info(f"   • Estimated chunks needed: {len(text) // self.chunk_size + 1}")
@@ -309,7 +307,7 @@ class DocumentProcessor:
         chunk_index = 0
         total_boundary_adjustments = 0
         
-        logger.info(f"\n🔄 CHUNKING PROCESS:")
+        logger.info("\n🔄 CHUNKING PROCESS:")
         logger.info("-" * 30)
         
         while start < len(text):
@@ -326,7 +324,7 @@ class DocumentProcessor:
             boundary_found = False
             boundary_type = "none"
             if end < len(text):
-                logger.debug(f"   🔍 Searching for natural boundaries...")
+                logger.debug("   🔍 Searching for natural boundaries...")
                 
                 # Look for sentence endings
                 last_period = text.rfind('.', start, end)
@@ -339,7 +337,7 @@ class DocumentProcessor:
                 sentence_boundaries = [last_period, last_exclamation, last_question]
                 best_sentence = max(sentence_boundaries)
                 
-                logger.debug(f"   📍 Boundary analysis:")
+                logger.debug("   📍 Boundary analysis:")
                 logger.debug(f"      - Period: {last_period}")
                 logger.debug(f"      - Exclamation: {last_exclamation}")
                 logger.debug(f"      - Question: {last_question}")
@@ -366,7 +364,7 @@ class DocumentProcessor:
                     total_boundary_adjustments += 1
                     adjustment = end - initial_end
                     
-                    logger.debug(f"   ✅ Boundary found:")
+                    logger.debug("   ✅ Boundary found:")
                     logger.debug(f"      - Type: {boundary_type}")
                     logger.debug(f"      - New end position: {end:,}")
                     logger.debug(f"      - Adjustment: {adjustment:+} characters")
@@ -375,13 +373,13 @@ class DocumentProcessor:
                     logger.debug(f"   ❌ No suitable boundary found (min size: {min_chunk_size})")
                     logger.debug(f"      - Using original end position: {end:,}")
             else:
-                logger.debug(f"   📍 At end of document - using remaining text")
+                logger.debug("   📍 At end of document - using remaining text")
                 
             # Extract and process chunk text
             chunk_text = text[start:end].strip()
             
             if chunk_text:
-                logger.debug(f"   📝 Chunk content:")
+                logger.debug("   📝 Chunk content:")
                 logger.debug(f"      - Length: {len(chunk_text):,} characters")
                 logger.debug(f"      - Words: {len(chunk_text.split()):,}")
                 logger.debug(f"      - Lines: {len(chunk_text.split(chr(10))):,}")
@@ -468,13 +466,13 @@ class DocumentProcessor:
                 
                 # Calculate next start position with overlap
                 if start + self.chunk_size - self.chunk_overlap >= len(text):
-                    logger.debug(f"   🏁 Reached end of text - stopping chunking")
+                    logger.debug("   🏁 Reached end of text - stopping chunking")
                     break
                     
                 new_start = max(start + self.chunk_size - self.chunk_overlap, end)
                 overlap_amount = end - new_start if end > new_start else 0
                 
-                logger.debug(f"   ➡️ Next chunk positioning:")
+                logger.debug("   ➡️ Next chunk positioning:")
                 logger.debug(f"      - Next start: {new_start:,}")
                 logger.debug(f"      - Actual overlap: {overlap_amount} characters")
                 logger.debug(f"      - Remaining text: {len(text) - new_start:,} characters")
@@ -482,14 +480,14 @@ class DocumentProcessor:
                 start = new_start
                 
             else:
-                logger.warning(f"   ⚠️ Empty chunk text after stripping - skipping")
+                logger.warning("   ⚠️ Empty chunk text after stripping - skipping")
                 break
         
         # Chunking summary
-        logger.info(f"\n📊 CHUNKING SUMMARY:")
+        logger.info("\n📊 CHUNKING SUMMARY:")
         logger.info("-" * 30)
         logger.info(f"✅ Chunking completed for {source_file} (page {page_number})")
-        logger.info(f"📈 RESULTS:")
+        logger.info("📈 RESULTS:")
         logger.info(f"   • Total chunks created: {len(chunks)}")
         logger.info(f"   • Boundary adjustments: {total_boundary_adjustments}")
         logger.info(f"   • Adjustment rate: {(total_boundary_adjustments/len(chunks)*100):.1f}%" if len(chunks) > 0 else "   • No chunks created")
@@ -498,11 +496,11 @@ class DocumentProcessor:
             chunk_sizes = [len(chunk.content) for chunk in chunks]
             chunk_words = [len(chunk.content.split()) for chunk in chunks]
             
-            logger.info(f"   • Size statistics:")
+            logger.info("   • Size statistics:")
             logger.info(f"     - Average: {sum(chunk_sizes)/len(chunk_sizes):.1f} characters")
             logger.info(f"     - Range: {min(chunk_sizes)}-{max(chunk_sizes)} characters")
             logger.info(f"     - Total output: {sum(chunk_sizes):,} characters")
-            logger.info(f"   • Word statistics:")
+            logger.info("   • Word statistics:")
             logger.info(f"     - Average: {sum(chunk_words)/len(chunk_words):.1f} words per chunk")
             logger.info(f"     - Total words: {sum(chunk_words):,}")
             
@@ -576,7 +574,7 @@ class DocumentProcessor:
             pdf_docs = self.pdf_converter.run(sources=pdf_files) # type: ignore
             conversion_time = (datetime.now() - start_time).total_seconds()
             
-            logger.info(f"✅ PDF conversion completed")
+            logger.info("✅ PDF conversion completed")
             logger.info(f"   • Conversion time: {conversion_time:.2f} seconds")
             logger.info(f"   • Documents extracted: {len(pdf_docs['documents'])}")
             
@@ -602,7 +600,7 @@ class DocumentProcessor:
             text_docs = self.text_converter.run(sources=text_files) # type: ignore
             conversion_time = (datetime.now() - start_time).total_seconds()
             
-            logger.info(f"✅ Text conversion completed")
+            logger.info("✅ Text conversion completed")
             logger.info(f"   • Conversion time: {conversion_time:.2f} seconds")
             logger.info(f"   • Documents extracted: {len(text_docs['documents'])}")
             
@@ -641,7 +639,7 @@ class DocumentProcessor:
             
             conversion_time = (datetime.now() - start_time).total_seconds()
             
-            logger.info(f"✅ Markdown conversion completed")
+            logger.info("✅ Markdown conversion completed")
             logger.info(f"   • Conversion time: {conversion_time:.2f} seconds")
             logger.info(f"   • Documents extracted: {len(markdown_docs['documents'])}")
             

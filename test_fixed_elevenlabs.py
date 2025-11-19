@@ -73,7 +73,7 @@ def test_fixed_elevenlabs():
     print("=" * 50)
     print(f"Agent Name: {payload['name']}")
     print(f"Channel: {payload['properties']['channel']}")
-    print(f"TTS: ElevenLabs (Fixed Format)")
+    print("TTS: ElevenLabs (Fixed Format)")
     print(f"Voice ID: {payload['properties']['tts']['params']['voice_id']}")
     print()
     

@@ -11,10 +11,9 @@ import os
 import tempfile
 import re
 from pathlib import Path
-from typing import List, Optional, Dict, Any, Union
+from typing import List, Optional, Dict, Any
 from dataclasses import dataclass
-from urllib.parse import urlparse, parse_qs
-import hashlib
+from urllib.parse import urlparse
 from datetime import datetime
 
 try:
@@ -277,7 +276,7 @@ class YouTubeAudioTranscriber:
                     webpage_url=info.get('webpage_url', url)
                 )
                 
-                logger.info(f"📈 Video metadata extracted:")
+                logger.info("📈 Video metadata extracted:")
                 logger.info(f"   • Title: {video_info.title}")
                 logger.info(f"   • Channel: {video_info.channel}")
                 logger.info(f"   • Duration: {video_info.duration}s" if video_info.duration else "   • Duration: Unknown")
@@ -373,7 +372,7 @@ class YouTubeAudioTranscriber:
         logger.info("🎬 STARTING YOUTUBE AUDIO TRANSCRIPTION PIPELINE")
         logger.info("=" * 100)
         
-        logger.info(f"📋 Input Analysis:")
+        logger.info("📋 Input Analysis:")
         logger.info(f"   • Number of YouTube URLs: {len(sources)}")
         
         all_documents = []
@@ -439,7 +438,7 @@ class YouTubeAudioTranscriber:
             doc_types[content_type] = doc_types.get(content_type, 0) + 1
         
         if doc_types:
-            logger.info(f"📋 Document type distribution:")
+            logger.info("📋 Document type distribution:")
             for doc_type, count in doc_types.items():
                 logger.info(f"   • {doc_type}: {count}")
         
@@ -516,7 +515,7 @@ class YouTubeAudioTranscriber:
             
             enhanced_documents.append(enhanced_doc)
         
-        logger.info(f"✅ Enhanced all documents with YouTube metadata")
+        logger.info("✅ Enhanced all documents with YouTube metadata")
         
         return enhanced_documents
     
@@ -649,7 +648,7 @@ if __name__ == "__main__":
         result = transcriber.run(sources=test_urls)
         documents = result["documents"]
         
-        print(f"\n🎉 Transcription completed!")
+        print("\n🎉 Transcription completed!")
         print(f"📊 Generated {len(documents)} documents")
         
         # Display sample results

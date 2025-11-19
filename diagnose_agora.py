@@ -25,7 +25,7 @@ def diagnose_agora_credentials():
     customer_secret = os.getenv("AGORA_CUSTOMER_SECRET")
     rtc_token = os.getenv("AGORA_RTC_TOKEN")
     
-    print(f"📋 Loaded Credentials:")
+    print("📋 Loaded Credentials:")
     print(f"   • App ID: {app_id}")
     print(f"   • Customer ID: {customer_id}")
     print(f"   • Customer Secret: {'*' * (len(customer_secret) if customer_secret else 0)}")
@@ -146,7 +146,7 @@ def test_agent_creation():
     try:
         response = requests.post(url, headers=headers, json=test_config, timeout=30)
         
-        print(f"📥 Response:")
+        print("📥 Response:")
         print(f"   • Status Code: {response.status_code}")
         print(f"   • Headers: {dict(response.headers)}")
         

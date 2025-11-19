@@ -61,7 +61,7 @@ def test_audio_file_access():
         return False
     
     size = test_file.stat().st_size
-    print(f"📊 File info:")
+    print("📊 File info:")
     print(f"   ✅ Path: {test_file}")
     print(f"   ✅ Size: {size:,} bytes ({size/1024:.1f} KB)")
     print(f"   ✅ Readable: {os.access(test_file, os.R_OK)}")
@@ -165,7 +165,7 @@ def test_mocked_transcriber():
             test_file = str(Path(__file__).parent.parent / "data" / "harvard.wav")
             result = transcriber.run([test_file])
             
-            print(f"📊 Results:")
+            print("📊 Results:")
             documents = result.get("documents", [])
             print(f"   ✅ Documents returned: {len(documents)}")
             
@@ -198,7 +198,6 @@ def test_logging_setup():
     
     try:
         # Test direct logger usage
-        import logging
         from core.logging import CustomLogger
         
         print("📝 Testing custom logger...")
@@ -306,9 +305,9 @@ def main():
             print(f"❌ ERROR in {test_name}: {e}")
     
     # Summary
-    print(f"\n" + "=" * 60)
-    print(f"🎯 TEST SUMMARY")
-    print(f"=" * 60)
+    print("\n" + "=" * 60)
+    print("🎯 TEST SUMMARY")
+    print("=" * 60)
     
     passed = sum(1 for _, success in results if success)
     total = len(results)
@@ -317,17 +316,17 @@ def main():
     print(f"❌ Failed: {total - passed}/{total}")
     
     if passed == total:
-        print(f"\n🎉 All tests passed! Audio transcriber is working correctly.")
-        print(f"\n💡 Next steps to test with real API:")
-        print(f"   1. Get AssemblyAI API key from: https://www.assemblyai.com/")
-        print(f"   2. Set environment variable: ASSEMBLYAI_API_KEY=your_key")
-        print(f"   3. Run: python tests/test_audio_transcriber_integration.py")
-        print(f"\n📝 Test your audio file:")
+        print("\n🎉 All tests passed! Audio transcriber is working correctly.")
+        print("\n💡 Next steps to test with real API:")
+        print("   1. Get AssemblyAI API key from: https://www.assemblyai.com/")
+        print("   2. Set environment variable: ASSEMBLYAI_API_KEY=your_key")
+        print("   3. Run: python tests/test_audio_transcriber_integration.py")
+        print("\n📝 Test your audio file:")
         print(f"   • File ready: data/harvard.wav ({Path(__file__).parent.parent / 'data' / 'harvard.wav'})")
         print(f"   • Size: {(Path(__file__).parent.parent / 'data' / 'harvard.wav').stat().st_size:,} bytes")
     else:
         failed = [name for name, success in results if not success]
-        print(f"\n⚠️  Some tests failed:")
+        print("\n⚠️  Some tests failed:")
         for test in failed:
             print(f"   • {test}")
 

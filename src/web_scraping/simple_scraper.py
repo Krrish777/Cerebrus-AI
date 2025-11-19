@@ -5,13 +5,11 @@ A working web scraper implementation using requests and BeautifulSoup
 as a backup to Firecrawl integration.
 """
 
-import os
 import requests
 from bs4 import BeautifulSoup
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any
 from urllib.parse import urlparse
 from datetime import datetime
-from pathlib import Path
 
 from haystack import Document
 from ..core.logging import CustomLogger
@@ -252,7 +250,7 @@ if __name__ == "__main__":
         
         documents = scraper.scrape_url(test_url)
         
-        print(f"📊 Scraping Results:")
+        print("📊 Scraping Results:")
         print(f"   📄 Generated {len(documents)} documents")
         
         # Show sample documents
@@ -264,7 +262,7 @@ if __name__ == "__main__":
             print(f"   📊 Words: {doc.meta.get('chunk_word_count', 'N/A')}")
             print(f"   🏷️ Domain: {doc.meta.get('domain', 'N/A')}")
         
-        print(f"\n✅ Simple web scraper test completed!")
+        print("\n✅ Simple web scraper test completed!")
         
     except Exception as e:
         print(f"❌ Test failed: {e}")

@@ -9,10 +9,8 @@ This module contains comprehensive tests for the PDFProcessor functionality incl
 """
 
 import pytest
-import tempfile
-import os
 from pathlib import Path
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import Mock, patch
 from haystack import Document
 import sys
 

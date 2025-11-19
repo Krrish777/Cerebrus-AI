@@ -5,16 +5,14 @@ This server handles LLM requests from Agora and integrates them with the Cerebru
 It provides a webhook endpoint that Agora can call to get AI responses powered by your knowledge base.
 """
 
-import asyncio
 import logging
 import os
 from typing import Dict, Any, List, Optional
 from datetime import datetime
 import uvicorn
-from fastapi import FastAPI, Request, HTTPException, BackgroundTasks
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-import json
 
 # Try to import RAG generator, make it optional
 try:

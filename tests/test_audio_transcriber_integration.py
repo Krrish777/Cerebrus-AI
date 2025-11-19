@@ -7,7 +7,6 @@ Tests the complete audio processing pipeline using harvard.wav.
 import os
 import sys
 import pytest
-import logging
 from pathlib import Path
 from unittest.mock import Mock, patch
 
@@ -37,7 +36,7 @@ class TestAudioTranscriberIntegration:
         print(f"📊 File size: {file_size:,} bytes ({file_size/1024:.1f} KB)")
         assert file_size > 0, "Audio file should not be empty"
         
-        print(f"✅ Audio file is accessible and has content")
+        print("✅ Audio file is accessible and has content")
         
     def test_audio_processing_config_creation(self):
         """Test creating audio processing configuration."""
@@ -55,7 +54,7 @@ class TestAudioTranscriberIntegration:
             
             print("📋 Testing advanced configuration...")
             advanced_config = create_advanced_audio_config()
-            print(f"   ✅ Advanced config created")
+            print("   ✅ Advanced config created")
             print(f"   ✅ Entity detection: {advanced_config.entity_detection}")
             print(f"   ✅ Content safety: {advanced_config.content_safety}")
             print(f"   ✅ Auto highlights: {advanced_config.auto_highlights}")
@@ -95,12 +94,12 @@ class TestAudioTranscriberIntegration:
             print("📋 Configuration:")
             print(f"   • Language: {config.language_code}")
             print(f"   • Speaker labels: {config.speaker_labels}")
-            print(f"   • Enhanced features: disabled for speed")
+            print("   • Enhanced features: disabled for speed")
             
             # Initialize transcriber
-            print(f"\n🚀 Initializing transcriber...")
+            print("\n🚀 Initializing transcriber...")
             transcriber = AssemblyAITranscriber(api_key=api_key, config=config)
-            print(f"   ✅ Transcriber initialized")
+            print("   ✅ Transcriber initialized")
             
             # Transcribe the harvard.wav file
             print(f"\n🎵 Transcribing: {self.test_audio_file.name}")
@@ -108,7 +107,7 @@ class TestAudioTranscriberIntegration:
             
             result = transcriber.run([str(self.test_audio_file)])
             
-            print(f"\n📊 TRANSCRIPTION RESULTS:")
+            print("\n📊 TRANSCRIPTION RESULTS:")
             documents = result.get("documents", [])
             print(f"   📄 Documents returned: {len(documents)}")
             
@@ -125,10 +124,10 @@ class TestAudioTranscriberIntegration:
                 assert len(content) > 0, "Transcription should not be empty" # type: ignore
                 assert isinstance(content, str), "Content should be a string"
                 
-                print(f"   ✅ Transcription successful!")
+                print("   ✅ Transcription successful!")
                 
                 # Show metadata details
-                print(f"\n🗂️  METADATA ANALYSIS:")
+                print("\n🗂️  METADATA ANALYSIS:")
                 for key, value in list(metadata.items())[:10]:  # Show first 10
                     if isinstance(value, str) and len(value) > 50:
                         value = value[:50] + "..."
@@ -179,7 +178,7 @@ class TestAudioTranscriberIntegration:
                 mock_aai.TranscriptionConfig.return_value = Mock()
                 mock_aai.settings = Mock()
                 
-                print(f"\n🔧 Setting up mocked transcriber...")
+                print("\n🔧 Setting up mocked transcriber...")
                 
                 # Create config
                 config = AudioProcessingConfig(
@@ -189,13 +188,13 @@ class TestAudioTranscriberIntegration:
                 
                 # Initialize transcriber (mocked)
                 transcriber = AssemblyAITranscriber(api_key=self.test_api_key, config=config)
-                print(f"   ✅ Mocked transcriber initialized")
+                print("   ✅ Mocked transcriber initialized")
                 
                 # Run transcription
-                print(f"\n🎵 Running mocked transcription...")
+                print("\n🎵 Running mocked transcription...")
                 result = transcriber.run([str(self.test_audio_file)])
                 
-                print(f"\n📊 MOCKED TRANSCRIPTION RESULTS:")
+                print("\n📊 MOCKED TRANSCRIPTION RESULTS:")
                 documents = result.get("documents", [])
                 print(f"   📄 Documents returned: {len(documents)}")
                 
@@ -209,7 +208,7 @@ class TestAudioTranscriberIntegration:
                 assert "beer" in main_doc.content.lower(), "Content should contain expected words" # type: ignore
                 assert main_doc.meta.get("source") == str(self.test_audio_file)
                 
-                print(f"   ✅ Mocked transcription successful!")
+                print("   ✅ Mocked transcription successful!")
                 
         except ImportError as e:
             pytest.skip(f"Audio transcriber dependencies not available: {e}")
@@ -253,14 +252,14 @@ class TestAudioTranscriberIntegration:
                 respect_speakers=True
             )
             
-            print(f"   🧠 Smart processor created")
-            print(f"   ⚙️  Chunk length: 500, Overlap: 50, Speaker-aware: True")
+            print("   🧠 Smart processor created")
+            print("   ⚙️  Chunk length: 500, Overlap: 50, Speaker-aware: True")
             
             # Process the audio
-            print(f"\n🔄 Processing audio...")
+            print("\n🔄 Processing audio...")
             result = processor.run([str(self.test_audio_file)])
             
-            print(f"\n📊 SMART PROCESSING RESULTS:")
+            print("\n📊 SMART PROCESSING RESULTS:")
             documents = result.get("documents", [])
             print(f"   📄 Output documents: {len(documents)}")
             
@@ -273,7 +272,7 @@ class TestAudioTranscriberIntegration:
                 print(f"      Strategy: {doc.meta.get('processing_strategy', 'unknown')}")
                 print(f"      Chunk type: {doc.meta.get('chunk_type', 'unknown')}")
                 
-            print(f"   ✅ Smart processing successful!")
+            print("   ✅ Smart processing successful!")
             
         except ImportError as e:
             pytest.skip(f"Audio transcriber dependencies not available: {e}")
@@ -360,18 +359,18 @@ def main():
             import traceback
             traceback.print_exc()
     
-    print(f"\n" + "=" * 80)
-    print(f"🎯 TEST SUMMARY")
-    print(f"=" * 80)
+    print("\n" + "=" * 80)
+    print("🎯 TEST SUMMARY")
+    print("=" * 80)
     print(f"✅ Passed: {passed}/{total}")
     print(f"❌ Failed: {total - passed}/{total}")
     
     if passed == total:
-        print(f"🎉 All tests passed!")
+        print("🎉 All tests passed!")
     else:
-        print(f"⚠️  Some tests failed - check the output above")
+        print("⚠️  Some tests failed - check the output above")
     
-    print(f"\n💡 To run with pytest: pytest tests/test_audio_transcriber_integration.py -v")
+    print("\n💡 To run with pytest: pytest tests/test_audio_transcriber_integration.py -v")
 
 if __name__ == "__main__":
     main()

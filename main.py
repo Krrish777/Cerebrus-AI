@@ -8,21 +8,17 @@ import streamlit as st
 import os
 import re
 import logging
-from typing import List, Dict, Any, Optional
-from pathlib import Path
+from typing import List, Dict, Any
 from dotenv import load_dotenv
 from datetime import datetime
-from urllib.parse import urlparse
 
 # Load environment variables
 load_dotenv()
 
 # Import our modules
-from src.generation.rag import ElasticsearchRAGGenerator, create_rag_generator
+from src.generation.rag import create_rag_generator
 from src.document_processing.doc_processor import DocumentProcessor
-from src.embeddings.embedding_generator import EmbeddingGenerator
-from src.audio_processing.audio_transcriber import AssemblyAITranscriber, AudioProcessingConfig
-from src.audio_processing.yt_audio_transcriber import YouTubeAudioTranscriber, create_youtube_transcription_pipeline
+from src.audio_processing.yt_audio_transcriber import create_youtube_transcription_pipeline
 from src.web_scraping.firecrawl_only import SimpleWebScraper
 from src.conversational_ai.simple_voice_app_with_rag import render_voice_interface
 

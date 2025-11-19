@@ -8,26 +8,14 @@ and integrating them with the Cerebrus AI RAG system.
 import streamlit as st
 import asyncio
 import os
-import time
 import requests
 import subprocess
-from typing import Dict, List, Optional
 from datetime import datetime
-import json
 
 from src.conversational_ai.agora_ai import (
-    AgoraConversationalAI,
-    AgentConfig,
-    LLMConfig,
-    TTSConfig,
-    ASRConfig,
-    TurnDetectionConfig,
-    AgoraCredentials,
     create_agora_conversational_ai,
     create_default_agent_config
 )
-from src.generation.rag import ElasticsearchRAGGenerator
-from src.core.logging import CustomLogger
 
 # Initialize logger
 import logging
@@ -280,7 +268,7 @@ class AgoraStreamlitInterface:
                             st.write(f"**Duration:** {agent_info['duration']}")
                     
                     with col3:
-                        if st.button(f"🛑 Stop", key=f"stop_{agent_id}"):
+                        if st.button("🛑 Stop", key=f"stop_{agent_id}"):
                             self._stop_agent(agent_id)
         else:
             st.info("📭 No active agents. Create one below!")

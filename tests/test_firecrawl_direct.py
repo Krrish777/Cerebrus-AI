@@ -6,7 +6,6 @@ Direct test of the Firecrawl web scraper with your API key.
 """
 
 import os
-import sys
 from pathlib import Path
 
 # Load environment variables from .env file

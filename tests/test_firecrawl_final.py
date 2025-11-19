@@ -56,7 +56,7 @@ def main():
         
         # Test with a content-rich URL
         rich_url = "https://blog.dailydoseofds.com/p/5-chunking-strategies-for-rag"
-        print(f"\n🌐 Testing with content-rich URL...")
+        print("\n🌐 Testing with content-rich URL...")
         preview2 = scraper.get_preview(rich_url)
         
         if preview2.success:
@@ -64,8 +64,8 @@ def main():
             print(f"   📊 Word Count: {preview2.word_count}")
             print(f"   📄 Estimated Chunks: {preview2.metadata['estimated_chunks']}")
         
-        print(f"\n✅ All tests completed successfully!")
-        print(f"🎉 Firecrawl web scraper is working perfectly!")
+        print("\n✅ All tests completed successfully!")
+        print("🎉 Firecrawl web scraper is working perfectly!")
         
     except Exception as e:
         print(f"❌ Test failed: {e}")

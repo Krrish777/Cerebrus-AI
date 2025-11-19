@@ -12,8 +12,6 @@ Features:
 - Full document lifecycle management
 """
 
-import logging
-import json
 from typing import List, Dict, Any, Optional
 from pathlib import Path
 
@@ -131,7 +129,7 @@ class QdrantVectorDB:
     def _initialize_document_store(self):
         """Initialize Qdrant document store with configuration."""
         try:
-            logger.info(f"🚀 Initializing Qdrant document store") # type: ignore
+            logger.info("🚀 Initializing Qdrant document store") # type: ignore
             logger.info(f"   📍 Storage path: {self.storage_path}") # type: ignore
             logger.info(f"   📚 Collection: {self.collection_name}") # type: ignore
             logger.info(f"   📐 Embedding dimension: {self.embedding_dim}") # type: ignore
@@ -148,7 +146,7 @@ class QdrantVectorDB:
                 quantization_config=self.quantization_config
             )
             
-            logger.info(f"✅ Qdrant document store initialized successfully")
+            logger.info("✅ Qdrant document store initialized successfully")
             
             # Log current collection stats
             try:
@@ -571,7 +569,6 @@ def create_qdrant_vector_db(
 
 # Example usage for testing
 if __name__ == "__main__":
-    from ..document_processing.doc_processor import DocumentProcessor
     from ..embeddings.embedding_generator import EmbeddingGenerator
     
     print("🧪 Testing Qdrant Vector Database")
@@ -627,11 +624,11 @@ if __name__ == "__main__":
         
         # Show collection stats
         stats = vector_db.get_collection_stats()
-        print(f"\n📊 Collection Statistics:")
+        print("\n📊 Collection Statistics:")
         for key, value in stats.items():
             print(f"   {key}: {value}")
         
-        print(f"\n✅ Qdrant vector database test completed successfully!")
+        print("\n✅ Qdrant vector database test completed successfully!")
         
     except ImportError as e:
         print(f"❌ Missing dependencies: {e}")

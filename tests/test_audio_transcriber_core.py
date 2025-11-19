@@ -91,10 +91,10 @@ def test_harvard_wav_file():
         return False
     
     file_size = test_file.stat().st_size
-    print(f"📊 File details:")
+    print("📊 File details:")
     print(f"   • Path: {test_file}")
     print(f"   • Size: {file_size:,} bytes ({file_size/1024:.1f} KB)")
-    print(f"   • Exists: ✅")
+    print("   • Exists: ✅")
     print(f"   • Readable: {'✅' if os.access(test_file, os.R_OK) else '❌'}")
     
     if file_size == 0:
@@ -194,7 +194,7 @@ def test_smart_audio_processor_creation():
         print(f"   • Serialized keys: {list(serialized.keys())}")
         
         deserialized = SmartAudioProcessor.from_dict(serialized)
-        print(f"   • Deserialized successfully")
+        print("   • Deserialized successfully")
         
         print("✅ Smart processor tests passed")
         return True
@@ -276,9 +276,9 @@ def main():
             print(f"❌ ERROR: {test_name} - {e}")
     
     # Summary
-    print(f"\n" + "=" * 60)
-    print(f"🎯 TEST SUMMARY")
-    print(f"=" * 60)
+    print("\n" + "=" * 60)
+    print("🎯 TEST SUMMARY")
+    print("=" * 60)
     
     passed = sum(1 for _, success, _ in results if success)
     total = len(results)
@@ -287,18 +287,18 @@ def main():
     print(f"❌ Failed: {total - passed}/{total}")
     
     if passed == total:
-        print(f"\n🎉 All core tests passed! The audio transcriber is ready to use.")
-        print(f"💡 Next steps:")
-        print(f"   • Set ASSEMBLYAI_API_KEY for real transcription")
-        print(f"   • Run: python tests/test_audio_transcriber_integration.py")
-        print(f"   • Or use: pytest tests/ -v")
+        print("\n🎉 All core tests passed! The audio transcriber is ready to use.")
+        print("💡 Next steps:")
+        print("   • Set ASSEMBLYAI_API_KEY for real transcription")
+        print("   • Run: python tests/test_audio_transcriber_integration.py")
+        print("   • Or use: pytest tests/ -v")
     else:
-        print(f"\n⚠️  Some tests failed. Check the output above for details.")
+        print("\n⚠️  Some tests failed. Check the output above for details.")
         
         # Show failed tests
         failed_tests = [name for name, success, error in results if not success]
         if failed_tests:
-            print(f"\n❌ Failed tests:")
+            print("\n❌ Failed tests:")
             for test in failed_tests:
                 print(f"   • {test}")
 

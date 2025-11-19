@@ -9,7 +9,6 @@ import sys
 import argparse
 from pathlib import Path
 import json
-from typing import Dict, Any, List
 
 # Load environment variables from .env file
 try:
@@ -77,7 +76,7 @@ def test_basic_transcription(audio_file: str, show_full: bool = False):
             content = main_doc.content or ""
             metadata = main_doc.meta
             
-            print(f"\n📊 Results:")
+            print("\n📊 Results:")
             print(f"   • Content length: {len(content)} characters")
             print(f"   • Source: {metadata.get('source')}")
             print(f"   • Duration: {metadata.get('audio_duration_seconds')} seconds")
@@ -88,17 +87,17 @@ def test_basic_transcription(audio_file: str, show_full: bool = False):
             sentiment_data = metadata.get('sentiment_analysis', [])
             entities_data = metadata.get('entities', [])
             
-            print(f"\n🔍 Features:")
+            print("\n🔍 Features:")
             print(f"   • Sentiment segments: {len(sentiment_data)}")
             print(f"   • Entities: {len(entities_data)}")
             
             # Preview
             if show_full:
-                print(f"\n📝 Full transcription:")
+                print("\n📝 Full transcription:")
                 print(content)
             else:
                 lines = content.split('\n')[:5]
-                print(f"\n📝 Preview (first 5 lines):")
+                print("\n📝 Preview (first 5 lines):")
                 for line in lines:
                     if line.strip():
                         preview = line[:80] + "..." if len(line) > 80 else line
@@ -107,7 +106,7 @@ def test_basic_transcription(audio_file: str, show_full: bool = False):
             
             # Show sentiment examples
             if sentiment_data and len(sentiment_data) > 0:
-                print(f"\n💭 Sentiment examples:")
+                print("\n💭 Sentiment examples:")
                 for i, sentiment in enumerate(sentiment_data[:3]):
                     text = sentiment.get('text', '')[:40] + "..."
                     sentiment_val = sentiment.get('sentiment', 'unknown')
@@ -115,7 +114,7 @@ def test_basic_transcription(audio_file: str, show_full: bool = False):
             
             # Show entities
             if entities_data and len(entities_data) > 0:
-                print(f"\n🏷️  Entities:")
+                print("\n🏷️  Entities:")
                 for i, entity in enumerate(entities_data[:5]):
                     print(f"   {i+1}. \"{entity.get('text')}\" → {entity.get('entity_type')}")
         
@@ -169,7 +168,7 @@ def test_advanced_features(audio_file: str):
             # Show highlights
             highlights = metadata.get('highlights', [])
             if highlights:
-                print(f"\n⭐ Key highlights:")
+                print("\n⭐ Key highlights:")
                 for i, highlight in enumerate(highlights[:3]):
                     text = highlight.get('text', '')[:50]
                     rank = highlight.get('rank', 'unknown')
@@ -223,11 +222,11 @@ def test_smart_chunking(audio_file: str):
             chunk_types[chunk_type] = chunk_types.get(chunk_type, 0) + 1
             total_length += len(doc.content or '')
         
-        print(f"📊 Chunk analysis:")
+        print("📊 Chunk analysis:")
         print(f"   • Total content: {total_length} characters")
         print(f"   • Chunk types: {dict(chunk_types)}")
         
-        print(f"\n📝 Sample chunks:")
+        print("\n📝 Sample chunks:")
         for i, doc in enumerate(documents[:3]):
             chunk_type = doc.meta.get('chunk_type', 'unknown')
             content_preview = (doc.content or '')[:60].replace('\n', ' ')
@@ -394,7 +393,7 @@ Examples:
             success_count += 1
     
     # Summary
-    print(f"\n" + "=" * 50)
+    print("\n" + "=" * 50)
     print("🎯 TEST SUMMARY")
     print("=" * 50)
     print(f"✅ Passed: {success_count}/{total_tests}")
@@ -403,9 +402,9 @@ Examples:
     if success_count == total_tests:
         print("\n🎉 All tests passed! Audio transcription is working perfectly.")
     else:
-        print(f"\n⚠️  Some tests failed. Check the error messages above.")
+        print("\n⚠️  Some tests failed. Check the error messages above.")
     
-    print(f"\n💡 Tips:")
+    print("\n💡 Tips:")
     print("  • Use --help for more options")
     print("  • Use --full to see complete transcriptions")
     print("  • Use --save results.json to save output")

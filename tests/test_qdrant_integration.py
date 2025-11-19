@@ -10,7 +10,6 @@ import tempfile
 import shutil
 import time
 from pathlib import Path
-import numpy as np
 import sys
 
 # Add the src directory to Python path

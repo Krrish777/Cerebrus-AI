@@ -5,11 +5,9 @@ This script provides easy management of the Agora LLM webhook server.
 It can start, stop, restart, and check the status of the webhook server.
 """
 
-import os
 import sys
 import subprocess
 import time
-import signal
 import psutil
 import requests
 from pathlib import Path
@@ -76,7 +74,7 @@ class WebhookServerManager:
             
             if self.process.poll() is None:  # Still running
                 if self.health_check():
-                    logger.info(f"✅ Webhook server started successfully")
+                    logger.info("✅ Webhook server started successfully")
                     logger.info(f"🌐 Server available at: http://{self.host}:{self.port}")
                     logger.info(f"📊 Health check: http://{self.host}:{self.port}/health")
                     logger.info(f"🎙️ Webhook endpoint: http://{self.host}:{self.port}/llm-webhook")
@@ -85,7 +83,7 @@ class WebhookServerManager:
                     logger.warning("⚠️ Server started but health check failed")
                     return False
             else:
-                logger.error(f"❌ Failed to start webhook server")
+                logger.error("❌ Failed to start webhook server")
                 self.cleanup_pid()
                 return False
                 
@@ -270,7 +268,7 @@ def main():
     
     elif args.command == "status":
         status = manager.status()
-        print(f"\n📊 Webhook Server Status:")
+        print("\n📊 Webhook Server Status:")
         print(f"Running: {'✅ Yes' if status['running'] else '❌ No'}")
         print(f"Healthy: {'✅ Yes' if status['healthy'] else '❌ No'}")
         print(f"PID: {status['pid'] or 'N/A'}")

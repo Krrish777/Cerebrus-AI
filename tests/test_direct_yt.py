@@ -103,7 +103,7 @@ def test_youtube_transcription():
                     print(f"❌ Transcription failed: {transcript.error}")
                 else:
                     print("✅ Transcription completed!")
-                    print(f"\n📄 Transcript:")
+                    print("\n📄 Transcript:")
                     print(f"   Text: {transcript.text}")
                     
                     if hasattr(transcript, 'summary') and transcript.summary:

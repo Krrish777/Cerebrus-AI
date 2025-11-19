@@ -74,7 +74,7 @@ def test_final_elevenlabs():
     print("=" * 50)
     print(f"Agent Name: {payload['name']}")
     print(f"Channel: {payload['properties']['channel']}")
-    print(f"TTS: ElevenLabs (Corrected)")
+    print("TTS: ElevenLabs (Corrected)")
     print(f"Voice ID: {payload['properties']['tts']['params']['voice_id']}")
     print()
     

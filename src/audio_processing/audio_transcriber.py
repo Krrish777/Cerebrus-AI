@@ -1,14 +1,12 @@
 import os
-import sys
 from typing import List, Dict, Any, Optional, Union
 from pathlib import Path
 from dataclasses import dataclass, field
 import logging
 from urllib.parse import urlparse
-import io
 
 from haystack import component, Document
-from haystack.core.serialization import default_from_dict, default_to_dict
+from haystack.core.serialization import default_to_dict
 from src.core.logging import CustomLogger
 
 try:
@@ -19,8 +17,6 @@ except ImportError:
     aai = None
 
 # Configure logging with type safety
-import logging
-from typing import Union, Any
 
 try:
     from src.core.logging import CustomLogger

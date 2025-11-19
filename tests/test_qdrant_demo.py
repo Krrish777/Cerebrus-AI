@@ -19,7 +19,7 @@ from pathlib import Path
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
-from vector_database.qdrant_db import QdrantVectorDB, create_qdrant_vector_db
+from vector_database.qdrant_db import create_qdrant_vector_db
 from embeddings.embedding_generator import EmbeddingGenerator
 from core.logging import CustomLogger
 

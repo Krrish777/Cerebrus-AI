@@ -21,15 +21,17 @@ jobs:
       - name: Set up uv
         uses: astral-sh/setup-uv@v4
 
+      - name: ruff-action
+        uses: astral-sh/ruff-action@v3.5.1
+        with:
+          src: "./src"
+
       - name: Sync dependencies with uv (locked)
         run: |
           uv sync --frozen
           uv pip install pytest
+
       - name: Run tests
-        env:
-          PYTHONPATH: ${{ github.workspace }}/multi_doc_chat
-          GROQ_API_KEY: dummy
-          GOOGLE_API_KEY: dummy
-          LLM_PROVIDER: google
         run: |
           uv run pytest -q
+      

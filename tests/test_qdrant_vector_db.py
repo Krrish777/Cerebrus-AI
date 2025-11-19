@@ -14,7 +14,7 @@ import pytest
 import tempfile
 import shutil
 from pathlib import Path
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import Mock
 import numpy as np
 import sys
 

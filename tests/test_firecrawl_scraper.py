@@ -55,7 +55,7 @@ def test_web_scraper():
         preview = scraper.get_url_preview(test_url)
         
         if preview.get('success'):
-            print(f"✅ Preview successful:")
+            print("✅ Preview successful:")
             print(f"   📰 Title: {preview.get('title', 'N/A')}")
             print(f"   📊 Word Count: {preview.get('word_count', 'N/A')}")
             print(f"   📄 Estimated Chunks: {preview.get('estimated_chunks', 'N/A')}")
@@ -64,20 +64,20 @@ def test_web_scraper():
             print(f"\n🚀 Full scraping of {test_url}...")
             documents = scraper.scrape_url(test_url)
             
-            print(f"📊 Scraping Results:")
+            print("📊 Scraping Results:")
             print(f"   📄 Generated {len(documents)} documents")
             
             if documents:
                 # Show first document
                 doc = documents[0]
-                print(f"\n📖 Sample Document:")
+                print("\n📖 Sample Document:")
                 content_preview = doc.content[:200] if doc.content else "No content"
                 print(f"   📝 Content: {content_preview}...")
                 print(f"   🌐 URL: {doc.meta.get('original_url', 'N/A')}")
                 print(f"   📊 Word Count: {doc.meta.get('chunk_word_count', 'N/A')}")
                 print(f"   🏷️ Domain: {doc.meta.get('domain', 'N/A')}")
             
-            print(f"\n✅ Web scraper test completed successfully!")
+            print("\n✅ Web scraper test completed successfully!")
             return True
             
         else:

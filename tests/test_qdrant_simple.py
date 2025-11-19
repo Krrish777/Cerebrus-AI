@@ -66,7 +66,6 @@ def test_with_manual_data():
     
     try:
         from vector_database.qdrant_db import QdrantVectorDB, Document
-        import numpy as np
         
         # Create vector database
         vector_db = QdrantVectorDB(
@@ -135,7 +134,7 @@ if __name__ == "__main__":
         manual_success = test_with_manual_data()
     
     # Summary
-    print(f"\n📋 Test Summary")
+    print("\n📋 Test Summary")
     print("=" * 20)
     print(f"Basic test: {'✅ PASS' if basic_success else '❌ FAIL'}")
     print(f"Manual data test: {'✅ PASS' if manual_success else '❌ FAIL'}")

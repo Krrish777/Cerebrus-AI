@@ -14,21 +14,16 @@ Features:
 
 import os
 import base64
-import json
 import logging
 import asyncio
-import uuid
-from typing import Dict, List, Optional, Any, Callable
-from dataclasses import dataclass, asdict, field
+from typing import Dict, List, Optional, Any
+from dataclasses import dataclass, field
 from datetime import datetime
 import requests
-import websockets
 from urllib.parse import urljoin
 
-from src.core.logging import CustomLogger
 
 # Initialize logger
-import logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 if not logger.handlers:
@@ -371,7 +366,7 @@ class AgoraConversationalAI:
                 "use_rag": use_rag
             }
             
-            logger.info(f"✅ Agent started successfully")
+            logger.info("✅ Agent started successfully")
             logger.info(f"   • Agent ID: {agent_id}")
             logger.info(f"   • Status: {response.get('status')}")
             logger.info(f"   • Create Time: {response.get('create_ts')}")

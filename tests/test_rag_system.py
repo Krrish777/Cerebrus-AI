@@ -14,7 +14,7 @@ load_dotenv()
 # Add project root to path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from src.generation.rag import ElasticsearchRAGGenerator, RAGResult, create_rag_generator
+from src.generation.rag import ElasticsearchRAGGenerator, create_rag_generator
 
 
 def create_sample_documents() -> List[Dict[str, Any]]:
@@ -137,7 +137,7 @@ def test_response_generation(rag_generator: ElasticsearchRAGGenerator):
         
         result = rag_generator.generate_response(test_query)
         
-        print(f"✅ Response generated successfully!")
+        print("✅ Response generated successfully!")
         print(f"📝 Response: {result.response[:200]}...")
         print(f"📊 Performance: {result.get_performance_summary()}")
         print(f"📚 Sources: {len(result.sources_used)} used")

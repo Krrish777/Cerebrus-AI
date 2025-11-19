@@ -15,7 +15,6 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
 # Import required modules
 from haystack import Document, Pipeline
 from haystack.components.builders import PromptBuilder
-from haystack.components.converters.output_adapter import OutputAdapter
 from haystack.components.retrievers.in_memory import InMemoryBM25Retriever
 from haystack.document_stores.in_memory import InMemoryDocumentStore
 from haystack_integrations.components.rankers.fastembed import FastembedRanker

@@ -4,7 +4,6 @@ Test script for the Cerebrus AI Web Scraper Module
 """
 
 import sys
-import os
 from pathlib import Path
 
 # Add the project root to Python path
@@ -50,7 +49,7 @@ def test_web_scraper_module():
         print(f"\n🚀 Scraping: {test_url}")
         documents = scraper.scrape_url(test_url, chunk_size=500, chunk_overlap=50)
         
-        print(f"\n📊 Scraping Results:")
+        print("\n📊 Scraping Results:")
         print(f"   📄 Generated {len(documents)} documents")
         
         # Show sample documents
@@ -63,8 +62,8 @@ def test_web_scraper_module():
             print(f"   🏷️ Domain: {doc.meta.get('domain', 'N/A')}")
             print(f"   📄 Chunk Index: {doc.meta.get('chunk_index', 'N/A')}")
         
-        print(f"\n✅ Web scraper test completed successfully!")
-        print(f"🎉 The web scraper module is ready to use!")
+        print("\n✅ Web scraper test completed successfully!")
+        print("🎉 The web scraper module is ready to use!")
         
     except Exception as e:
         print(f"❌ Test failed: {e}")

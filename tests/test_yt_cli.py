@@ -97,14 +97,14 @@ def test_youtube_transcription(transcriber):
         # Get video info first
         video_info = transcriber.get_video_info(test_url)
         if video_info:
-            print(f"\n📊 Video Information:")
+            print("\n📊 Video Information:")
             print(f"   • Title: {video_info.title}")
             print(f"   • Channel: {video_info.channel}")
             print(f"   • Duration: {video_info.duration}s")
             print(f"   • Views: {video_info.view_count:,}" if video_info.view_count else "   • Views: Unknown")
         
         # Ask user confirmation
-        response = input(f"\n🤔 Proceed with transcription? This will use your AssemblyAI credits. (y/n): ").strip().lower()
+        response = input("\n🤔 Proceed with transcription? This will use your AssemblyAI credits. (y/n): ").strip().lower()
         
         if response not in ['y', 'yes']:
             print("⏭️ Skipping transcription test")
@@ -117,15 +117,15 @@ def test_youtube_transcription(transcriber):
         result = transcriber.run(sources=[test_url])
         documents = result["documents"]
         
-        print(f"\n🎉 Transcription completed!")
-        print(f"📊 Results:")
+        print("\n🎉 Transcription completed!")
+        print("📊 Results:")
         print(f"   • Total documents: {len(documents)}")
         
         # Show main transcript
         main_docs = [doc for doc in documents if doc.meta.get('content_type') == 'main_transcript']
         if main_docs:
             main_doc = main_docs[0]
-            print(f"\n📄 Main Transcript:")
+            print("\n📄 Main Transcript:")
             print(f"   • Video: {main_doc.meta.get('video_title', 'Unknown')}")
             
             content = str(main_doc.content)
@@ -137,7 +137,7 @@ def test_youtube_transcription(transcriber):
             
             # Show analysis results
             metadata = main_doc.meta
-            print(f"\n📈 Analysis Results:")
+            print("\n📈 Analysis Results:")
             
             if 'sentiment_analysis' in metadata:
                 print(f"   • Sentiment Analysis: {len(metadata['sentiment_analysis'])} segments")
@@ -148,12 +148,12 @@ def test_youtube_transcription(transcriber):
             if 'topics' in metadata:
                 topics = metadata['topics']
                 if topics.get('summary'):
-                    print(f"   • Topic Analysis: Available")
+                    print("   • Topic Analysis: Available")
             
             if 'highlights' in metadata:
                 print(f"   • Auto Highlights: {len(metadata['highlights'])} key moments")
         
-        print(f"\n✅ YouTube transcription test completed successfully!")
+        print("\n✅ YouTube transcription test completed successfully!")
     
     except Exception as e:
         print(f"\n❌ Transcription failed: {e}")
@@ -185,7 +185,7 @@ def test_custom_url(transcriber):
         print("❌ Could not get video information")
         return
     
-    print(f"\n📊 Video Information:")
+    print("\n📊 Video Information:")
     print(f"   • Title: {video_info.title}")
     print(f"   • Channel: {video_info.channel}")
     print(f"   • Duration: {video_info.duration}s" if video_info.duration else "   • Duration: Unknown")
@@ -203,7 +203,7 @@ def test_custom_url(transcriber):
         result = transcriber.run(sources=[custom_url])
         documents = result["documents"]
         
-        print(f"\n🎉 Custom URL transcription completed!")
+        print("\n🎉 Custom URL transcription completed!")
         print(f"📊 Generated {len(documents)} documents")
         
     except Exception as e:

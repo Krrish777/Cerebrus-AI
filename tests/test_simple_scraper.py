@@ -55,7 +55,7 @@ def test_firecrawl_scraper():
                 metadata = getattr(result, 'metadata', None)
                 
                 # Display results
-                print(f"   ✅ Success!")
+                print("   ✅ Success!")
                 print(f"   📊 Content Length: {len(content)} characters")
                 print(f"   📝 Preview: {content[:100]}...")
                 
@@ -73,8 +73,8 @@ def test_firecrawl_scraper():
             except Exception as e:
                 print(f"   ❌ Error: {e}")
         
-        print(f"\n✅ Firecrawl test completed!")
-        print(f"🎉 Web scraper is working correctly!")
+        print("\n✅ Firecrawl test completed!")
+        print("🎉 Web scraper is working correctly!")
         
     except Exception as e:
         print(f"❌ Failed to initialize Firecrawl: {e}")

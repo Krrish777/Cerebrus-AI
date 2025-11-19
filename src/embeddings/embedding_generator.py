@@ -6,11 +6,9 @@ through Haystack components. It supports both document embedding for indexing
 and query embedding for retrieval.
 """
 
-import logging
 import numpy as np
-from typing import List, Dict, Any, Optional, Union
+from typing import List, Dict, Any, Optional
 from dataclasses import dataclass
-from pathlib import Path
 
 try:
     from haystack import Document # type: ignore
@@ -153,7 +151,7 @@ class EmbeddingGenerator:
             test_result = self.text_embedder.run("test")
             self.embedding_dimension = len(test_result['embedding'])
             
-            logger.info(f"✅ Embedding models initialized successfully") # type: ignore
+            logger.info("✅ Embedding models initialized successfully") # type: ignore
             logger.info(f"📊 Model: {self.model_name}") # type: ignore
             logger.info(f"📏 Embedding dimension: {self.embedding_dimension}") # type: ignore
             logger.info(f"🖥️ Device: {self.device or 'auto'}") # type: ignore
@@ -428,10 +426,10 @@ if __name__ == "__main__":
             ]
         )
         
-        print(f"🔗 Generating document embeddings...")
+        print("🔗 Generating document embeddings...")
         embedded_docs = embedder.embed_documents(documents)
         
-        print(f"📊 Results:")
+        print("📊 Results:")
         for i, emb_doc in enumerate(embedded_docs):
             print(f"   📄 Document {i+1}:")
             print(f"      📝 Content: {emb_doc.document.content[:50]}...")
@@ -445,18 +443,18 @@ if __name__ == "__main__":
         print(f"📏 Query embedding shape: {query_embedding.shape}")
         
         # Test similarity (simple dot product)
-        print(f"\n🎯 Computing similarities:")
+        print("\n🎯 Computing similarities:")
         for i, emb_doc in enumerate(embedded_docs):
             similarity = np.dot(query_embedding, emb_doc.embedding)
             print(f"   📄 Document {i+1}: {similarity:.4f}")
         
         # Show model info
-        print(f"\n📋 Model Information:")
+        print("\n📋 Model Information:")
         info = embedder.get_model_info()
         for key, value in info.items():
             print(f"   {key}: {value}")
         
-        print(f"\n✅ Embedding generator test completed successfully!")
+        print("\n✅ Embedding generator test completed successfully!")
         
     except Exception as e:
         print(f"❌ Test failed: {e}")

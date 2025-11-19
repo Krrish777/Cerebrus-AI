@@ -83,8 +83,8 @@ def test_document_processor():
         result = processor.run(sources=test_files)
         documents = result['documents']
         
-        print(f"\n✅ Processing completed successfully!")
-        print(f"📊 Results:")
+        print("\n✅ Processing completed successfully!")
+        print("📊 Results:")
         print(f"   • Total chunks created: {len(documents)}")
         
         # Analyze results by type
@@ -93,12 +93,12 @@ def test_document_processor():
             doc_type = doc.meta.get('source_type', 'unknown')
             type_stats[doc_type] = type_stats.get(doc_type, 0) + 1
         
-        print(f"   • Chunk distribution:")
+        print("   • Chunk distribution:")
         for doc_type, count in type_stats.items():
             print(f"     - {doc_type}: {count} chunks")
         
         # Show sample chunks
-        print(f"\n📝 Sample chunks:")
+        print("\n📝 Sample chunks:")
         for i, doc in enumerate(documents[:3], 1):
             chunk_id = doc.meta.get('chunk_id', 'unknown')
             content_preview = doc.content[:100] + "..." if len(doc.content) > 100 else doc.content # type: ignore
