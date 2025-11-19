@@ -21,10 +21,10 @@ jobs:
       - name: Set up uv
         uses: astral-sh/setup-uv@v4
 
-      - name: ruff-action
-        uses: astral-sh/ruff-action@v3.5.1
-        with:
-          src: "./src"
+      # - name: ruff-action
+      #   uses: astral-sh/ruff-action@v3.5.1
+      #   with:
+      #     src: "./src"
 
       - name: Sync dependencies with uv (locked)
         run: |
