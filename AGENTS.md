@@ -119,32 +119,14 @@ Copilot must avoid generating code that has:
 - Private attributes/methods: single leading underscore `_`.  
 - Avoid ambiguous names like `data`, `info`, `utils`; prefer descriptive.
 
-### 2.3 Whitespace & Formatting  
-- Avoid extraneous whitespace.  
-- Surround top-level function/class definitions with two blank lines, methods with one blank line.  
-- No trailing whitespace.  
-- Use f-strings for formatting.  
-- Comments should explain “why”, not “what”.
-
-### 2.4 Docstrings & Comments  
-- Every module, public class, public method must have a docstring `"""`.  
-- Docstrings must specify parameters, return types, exceptions.  
-- Inline comments only when absolutely necessary; lots of comments imply refactor.  
-- No TODOs in production code without ticket reference.
-
-### 2.6 Type Hints  
+### 2.3 Type Hints  
 - Use type hints on all public functions/methods.  
 - Use `typing` for complex types (`Optional`, `Union`, `Tuple`, `Iterable`).  
 - If function returns nothing, mark `-> None`.
 
 ---
 
-## Logging Standards  
-- Every module must import `customlogger`:  
-  ```python
-  from src.logging.customlogger import get_logger
-  logger = get_logger(__name__)
-    ```
+## Logging Standards
 
 - Use standard log levels: `DEBUG`, `INFO`, `WARNING`, `ERROR`, `CRITICAL`.
 * No emojis or decorative chars in log messages.

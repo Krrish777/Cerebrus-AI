@@ -1,3 +1,4 @@
+"""Legacy logging module providing a CustomLogger class for logging"""
 import os
 import logging
 from datetime import datetime
