@@ -1,0 +1,29 @@
+# Cerebrus AI Logging Configuration
+# Configuration for the logging system using LoggingConfig class
+
+# Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+level: "INFO"
+
+# Log directory (relative to project root, or absolute path)
+log_directory: "logs"
+
+# Log file naming
+filename_pattern: "app_{timestamp}.log"
+timestamp_format: "%d%m%Y_%H%M%S"
+
+# Log format strings
+format:
+  file: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  console: "%(levelname)s - %(message)s"
+
+# Output destinations
+enable_console_logging: true
+enable_file_logging: true
+
+# Log file management
+max_log_files: 30
+max_log_size_mb: 10
+
+# Advanced settings
+encoding: "utf-8"
+file_mode: "a"  # append mode
