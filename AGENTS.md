@@ -13,6 +13,7 @@
 2. Never include emojis, decorative symbols, or non-standard characters in logs.  
 3. Never generate runnable code without ensuring the virtual environment is active.  
 4. Never hard-code values such as file paths, credentials, constants, or environment-specific settings. Always use configs, environment variables, or parameters.  
+5. Never generate or edit files without user(me) permission
 
 ---
 

@@ -1,0 +1,85 @@
+# Document Processing Configuration
+# Core settings for document chunking, conversion, and processing
+
+# Core Processing Parameters
+chunk_size: 1000                    # Target chunk size in characters
+chunk_overlap: 200                  # Overlap between chunks in characters
+min_chunk_size_ratio: 0.5           # Minimum chunk size as ratio of target chunk size
+
+# Supported File Types
+supported_mime_types:               # MIME types for file routing
+  - "application/pdf"
+  - "text/plain"
+  - "text/markdown"
+
+supported_extensions:               # File extensions to process
+  - ".pdf"
+  - ".txt"
+  - ".text"
+  - ".md"
+  - ".markdown"
+
+extension_to_type_mapping:          # Extension to human-readable type mapping
+  ".pdf": "PDF"
+  ".txt": "Text"
+  ".text": "Text"
+  ".md": "Markdown"
+  ".markdown": "Markdown"
+
+# File Size Thresholds
+file_size_thresholds:
+  kb: 1024
+  mb: 1048576
+
+# Processing Options
+processing_options:
+  enable_pdf_processing: true
+  enable_text_processing: true
+  enable_markdown_processing: true
+  enable_markdown_fallback: true
+
+# Chunking Configuration
+chunking:
+  boundary_preferences:             # Preferred boundary types in order
+    - "paragraph"                   # Double newlines (\n\n)
+    - "sentence"                    # Sentence endings (. ! ?)
+    - "line"                        # Single newlines (\n)
+
+  content_analysis:
+    enable_statistics: true
+    enable_preview: true
+    preview_length: 200
+
+# Metadata Field Names
+metadata_fields:
+  chunk_id: "chunk_id"
+  chunk_index: "chunk_index"
+  source_file: "source_file"
+  source_type: "source_type"
+  page_number: "page_number"
+  content_hash: "content_hash"
+  start_char: "start_char"
+  end_char: "end_char"
+  word_count: "word_count"
+  line_count: "line_count"
+  boundary_found: "boundary_found"
+  boundary_type: "boundary_type"
+  processing_date: "processing_date"
+
+# Performance Settings
+performance:
+  enable_timing: true
+  enable_statistics: true
+  enable_progress_tracking: true
+
+# Error Handling
+error_handling:
+  fail_fast: true
+  continue_on_individual_file_error: true
+
+# Validation Settings
+validation:
+  validate_inputs: true
+  validate_outputs: true
+  check_file_existence: true
+  validate_metadata: true
