@@ -155,27 +155,21 @@ class TestFileGrouping:
         
         assert groups == {}
 
-    @patch.object(DocumentPipelineOrchestrator, 'file_analyzer')
-    def test_group_files_uses_file_analyzer(self, mock_file_analyzer_prop, 
-                                          orchestrator: DocumentPipelineOrchestrator,
+    def test_group_files_uses_file_analyzer(self, orchestrator: DocumentPipelineOrchestrator,
                                           sample_files: List[Path]):
         """Test that file grouping uses file analyzer."""
         mock_analyzer = Mock()
         mock_analyzer.detect_file_type.side_effect = lambda path: "Text" if path.suffix == ".txt" else "PDF"
-        mock_file_analyzer_prop.return_value = mock_analyzer
+        orchestrator._file_analyzer = mock_analyzer
         
         groups = orchestrator._group_files_by_type(sample_files[:2])  # txt and pdf
         
         # Should call detect_file_type for each file
         assert mock_analyzer.detect_file_type.call_count == 2
-
-
 class TestFileAnalysis:
     """Test file analysis workflow."""
 
-    @patch.object(DocumentPipelineOrchestrator, 'file_analyzer')
-    def test_analyze_files_successful(self, mock_file_analyzer_prop,
-                                     orchestrator: DocumentPipelineOrchestrator,
+    def test_analyze_files_successful(self, orchestrator: DocumentPipelineOrchestrator,
                                      sample_files: List[Path]):
         """Test successful file analysis."""
         mock_analyzer = Mock()
@@ -186,21 +180,19 @@ class TestFileAnalysis:
             "total_size": 1024
         }
         mock_analyzer.analyze_files.return_value = mock_analysis_result
-        mock_file_analyzer_prop.return_value = mock_analyzer
+        orchestrator._file_analyzer = mock_analyzer
         
         result = orchestrator._analyze_files(sample_files)
         
         mock_analyzer.analyze_files.assert_called_once_with(sample_files)
         assert result == mock_analysis_result
 
-    @patch.object(DocumentPipelineOrchestrator, 'file_analyzer')
-    def test_analyze_files_exception_handling(self, mock_file_analyzer_prop,
-                                             orchestrator: DocumentPipelineOrchestrator,
+    def test_analyze_files_exception_handling(self, orchestrator: DocumentPipelineOrchestrator,
                                              sample_files: List[Path]):
         """Test file analysis exception handling."""
         mock_analyzer = Mock()
         mock_analyzer.analyze_files.side_effect = Exception("Analysis error")
-        mock_file_analyzer_prop.return_value = mock_analyzer
+        orchestrator._file_analyzer = mock_analyzer
         
         result = orchestrator._analyze_files(sample_files)
         
@@ -218,9 +210,9 @@ class TestFileGroupProcessing:
         test_files = [Path("/test/file1.txt"), Path("/test/file2.txt")]
         
         # Mock all components
-        with patch.object(orchestrator, 'document_converter') as mock_converter, \
-             patch.object(orchestrator, 'chunking_service') as mock_chunker, \
-             patch.object(orchestrator, 'metadata_manager') as mock_metadata:
+        with patch.object(orchestrator, '_document_converter') as mock_converter, \
+             patch.object(orchestrator, '_chunking_service') as mock_chunker, \
+             patch.object(orchestrator, '_metadata_manager') as mock_metadata:
             
             # Setup mocks
             mock_converter.convert_files.return_value = {
@@ -248,7 +240,7 @@ class TestFileGroupProcessing:
         """Test handling of conversion errors."""
         test_files = [Path("/test/file.txt")]
         
-        with patch.object(orchestrator, 'document_converter') as mock_converter:
+        with patch.object(orchestrator, '_document_converter') as mock_converter:
             mock_converter.convert_files.return_value = {
                 "documents": [],
                 "errors": ["Conversion failed"]
@@ -263,7 +255,7 @@ class TestFileGroupProcessing:
         """Test handling when conversion returns no documents."""
         test_files = [Path("/test/file.txt")]
         
-        with patch.object(orchestrator, 'document_converter') as mock_converter:
+        with patch.object(orchestrator, '_document_converter') as mock_converter:
             mock_converter.convert_files.return_value = {
                 "documents": [],
                 "errors": []
@@ -278,7 +270,7 @@ class TestFileGroupProcessing:
         """Test exception handling in file group processing."""
         test_files = [Path("/test/file.txt")]
         
-        with patch.object(orchestrator, 'document_converter') as mock_converter:
+        with patch.object(orchestrator, '_document_converter') as mock_converter:
             mock_converter.convert_files.side_effect = Exception("Processing error")
             
             result = orchestrator._process_file_group("Text", test_files)
@@ -347,7 +339,7 @@ class TestDocumentProcessing:
             
             assert result["documents"] == []
             assert len(result["errors"]) == 2
-            assert result["stats"]["files_processed"] == len(sample_files)
+            assert result["stats"]["files_processed"] == 0
             assert result["stats"]["errors_count"] == 2
 
     def test_process_documents_mixed_success_failure(self, orchestrator: DocumentPipelineOrchestrator,

@@ -78,7 +78,7 @@ class TestEndToEndLogging:
             log_level=log_level
         )
         logger_wrapper = CustomLogger(config)
-        logger = logger_wrapper.get_logger("level_filter_test")
+        logger = logger_wrapper.get_logger(f"level_filter_test_{log_level}")
         
         # Write all levels
         logger.debug("debug")

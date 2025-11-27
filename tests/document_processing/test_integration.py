@@ -473,7 +473,7 @@ class TestPipelineEndToEndWorkflow:
             
             # Should continue processing despite first group failure
             assert result["documents"] is not None
-        assert len(result["documents"]) > 0  # Some documents processed
+            assert len(result["documents"]) > 0  # Some documents processed
             assert len(result["errors"]) > 0     # Some errors recorded
             assert "First group processing failed" in " ".join(result["errors"])
 

@@ -141,7 +141,7 @@ class TestDocumentChunking:
         mock_splitter_class.return_value = mock_splitter
         
         # Mock the splitter property to return our mock
-        with patch.object(chunking_service, 'splitter', mock_splitter):
+        with patch.object(chunking_service, '_splitter', mock_splitter):
             result = chunking_service.chunk_documents([sample_document])
         
         # Verify splitter was called correctly
@@ -154,15 +154,17 @@ class TestDocumentChunking:
         assert result["stats"]["input_documents"] == 1
         assert result["stats"]["output_chunks"] == 2
 
-    @patch.object(ChunkingService, 'splitter', new_callable=lambda: Mock())
-    def test_chunk_documents_splitter_exception(self, mock_splitter_prop,
+    @patch('src.document_processing.chunking_service.DocumentSplitter')
+    def test_chunk_documents_splitter_exception(self, mock_splitter_class, 
                                                chunking_service: ChunkingService,
                                                sample_document: Document):
         """Test handling of splitter exceptions."""
-        # Mock splitter to raise exception
+        # Reset _splitter to ensure lazy loading uses the mock
+        chunking_service._splitter = None
+        
         mock_splitter = Mock()
         mock_splitter.run.side_effect = Exception("Splitter error")
-        mock_splitter_prop.return_value = mock_splitter
+        mock_splitter_class.return_value = mock_splitter
         
         result = chunking_service.chunk_documents([sample_document])
         
@@ -170,11 +172,14 @@ class TestDocumentChunking:
         assert len(result["errors"]) == 1
         assert "Splitter error" in result["errors"][0]
 
-    @patch.object(ChunkingService, 'splitter', new_callable=lambda: Mock())
-    def test_chunk_documents_performance_tracking(self, mock_splitter_prop,
+    @patch('src.document_processing.chunking_service.DocumentSplitter')
+    def test_chunk_documents_performance_tracking(self, mock_splitter_class,
                                                  chunking_service: ChunkingService,
                                                  sample_documents: List[Document]):
         """Test that performance statistics are tracked."""
+        # Reset _splitter to ensure lazy loading uses the mock
+        chunking_service._splitter = None
+        
         # Mock splitter to return chunks
         mock_chunks = [
             Document(id=f"chunk_{i}", content=f"Chunk {i}", meta={})
@@ -182,7 +187,7 @@ class TestDocumentChunking:
         ]
         mock_splitter = Mock()
         mock_splitter.run.return_value = {"documents": mock_chunks}
-        mock_splitter_prop.return_value = mock_splitter
+        mock_splitter_class.return_value = mock_splitter
         
         result = chunking_service.chunk_documents(sample_documents)
         
@@ -450,7 +455,7 @@ class TestChunkingServiceIntegration:
         )
         
         # Mock splitter for performance test
-        with patch.object(chunking_service, 'splitter') as mock_splitter:
+        with patch.object(chunking_service, '_splitter') as mock_splitter:
             mock_chunks = [
                 Document(id=f"chunk_{i}", content=f"Chunk {i}", meta={})
                 for i in range(100)  # Simulate 100 chunks

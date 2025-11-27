@@ -36,7 +36,7 @@ class LoggingConfig:
             self._logs_dir = self._resolve_logs_dir(logs_dir)
             self._log_file_name = log_file_name or self._generate_log_filename()
             self._log_level = log_level if log_level is not None else logging.INFO
-            self._file_format = file_format or '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+            self._file_format = file_format or '%(asctime)s - %(name)s - %(levelname)s - %(message)s\n'
             self._console_format = console_format or '%(levelname)s - %(message)s'
         else:
             # YAML configuration mode
@@ -44,7 +44,7 @@ class LoggingConfig:
             self._logs_dir = self._resolve_logs_dir()
             self._log_file_name = self._generate_log_filename()
             self._log_level = self._parse_log_level()
-            self._file_format = self._config.get('format', {}).get('file', '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+            self._file_format = self._config.get('format', {}).get('file', '%(asctime)s - %(name)s - %(levelname)s - %(message)s\n')
             self._console_format = self._config.get('format', {}).get('console', '%(levelname)s - %(message)s')
 
     @property

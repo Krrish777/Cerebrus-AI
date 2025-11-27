@@ -34,6 +34,8 @@ class LoggerFactory:
         """
         Create configured file handler.
         """
+        import io
+        
         handler = logging.FileHandler(
             self._config.log_file_name,
             encoding="utf-8"
@@ -41,6 +43,8 @@ class LoggerFactory:
         handler.setLevel(self._config.log_level)
         formatter = logging.Formatter(self._config.file_format)
         handler.setFormatter(formatter)
+        # Make the stream line buffered to ensure immediate writes
+        handler.stream = io.open(handler.baseFilename, handler.mode, encoding=handler.encoding, buffering=1)
         return handler
     
     def _create_console_handler(self) -> logging.Handler:

@@ -31,3 +31,16 @@ dependencies = [
     "websockets>=15.0.1",
     "yt-dlp>=2025.11.12",
 ]
+
+[tool.pytest.ini_options]
+markers = [
+    "unit: Unit tests",
+    "integration: Integration tests",
+    "config: Configuration tests",
+    "slow: Slow running tests",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.1",
+]

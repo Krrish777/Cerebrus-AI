@@ -195,7 +195,15 @@ class FileAnalyzer:
         :param file_path: Path to the file
         :return: File information dictionary
         """
-        if not file_path.exists():
+        try:
+            exists = file_path.exists()
+        except OSError as e:
+            return {
+                "exists": False,
+                "error": f"File access error: {str(e)}"
+            }
+        
+        if not exists:
             return {
                 "exists": False,
                 "error": f"File does not exist: {file_path}"

@@ -6,7 +6,7 @@ Follows AGENTS.md principles: single responsibility, loose coupling, extensibili
 """
 
 from pathlib import Path
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any
 import time
 
 from haystack import Pipeline
@@ -59,7 +59,7 @@ class DocumentConverter:
 
         if not file_paths:
             logger.warning("No files provided for conversion")
-            return {"documents": [], "errors": []}
+            return {"documents": [], "errors": [], "stats": {"conversion_time": 0.0, "files_converted": 0, "documents_created": 0}}
 
         try:
             # Convert paths to strings for Haystack compatibility

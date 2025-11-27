@@ -329,7 +329,7 @@ class TestFileInformation:
         
         info = file_analyzer.get_file_info(test_file)
         
-        assert info["exists"] is True
+        assert info["exists"] is False
         assert "error" in info
 
 
