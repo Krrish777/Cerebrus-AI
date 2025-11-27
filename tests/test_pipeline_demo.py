@@ -223,16 +223,26 @@ class TestPipelineDemoOutput:
 
     def test_proper_log_formatting(self, caplog):
         """Test that log messages use proper parameterized formatting."""
+        import logging
+        caplog.set_level(logging.DEBUG)
+        
         test_file = "test.pdf"
         test_count = 5
         
-        logger.info("Processing %d files including %s", test_count, test_file)
-        logger.debug("File analysis completed for %s", test_file)
+        # Temporarily set logger level to DEBUG for this test
+        original_level = logger.level
+        logger.setLevel(logging.DEBUG)
         
-        # Verify messages were logged
-        assert len(caplog.records) >= 2
-        
-        # Verify no f-strings in actual message (parameterized logging)
-        for record in caplog.records:
-            assert "{" not in record.getMessage(), \
-                f"Log message not properly formatted: {record.getMessage()}"
+        try:
+            logger.info("Processing %d files including %s", test_count, test_file)
+            logger.debug("File analysis completed for %s", test_file)
+            
+            # Verify messages were logged
+            assert len(caplog.records) >= 2
+            
+            # Verify no f-strings in actual message (parameterized logging)
+            for record in caplog.records:
+                assert "{" not in record.getMessage(), \
+                    f"Log message not properly formatted: {record.getMessage()}"
+        finally:
+            logger.setLevel(original_level)

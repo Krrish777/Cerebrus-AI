@@ -34,17 +34,24 @@ class LoggerFactory:
         """
         Create configured file handler.
         """
-        import io
+        import os
+        class FlushingFileHandler(logging.FileHandler):
+            def emit(self, record):
+                super().emit(record)
+                self.flush()
+                if hasattr(self.stream, 'fileno'):
+                    try:
+                        os.fsync(self.stream.fileno())
+                    except (OSError, AttributeError):
+                        pass  # Ignore if not supported
         
-        handler = logging.FileHandler(
+        handler = FlushingFileHandler(
             self._config.log_file_name,
             encoding="utf-8"
         )
         handler.setLevel(self._config.log_level)
         formatter = logging.Formatter(self._config.file_format)
         handler.setFormatter(formatter)
-        # Make the stream line buffered to ensure immediate writes
-        handler.stream = io.open(handler.baseFilename, handler.mode, encoding=handler.encoding, buffering=1)
         return handler
     
     def _create_console_handler(self) -> logging.Handler:
