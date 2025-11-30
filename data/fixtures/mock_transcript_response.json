@@ -1,0 +1,74 @@
+{
+  "id": "transcript_test_123",
+  "status": "completed",
+  "text": "Hello, this is a test transcription. The speaker is discussing various topics including technology and innovation. This is a sample transcript used for testing purposes.",
+  "confidence": 0.95,
+  "audio_duration": 120.5,
+  "audio_url": "https://example.com/audio/test.mp3",
+  "language_code": "en",
+  "words": [
+    {"text": "Hello", "start": 0, "end": 500, "confidence": 0.98},
+    {"text": "this", "start": 500, "end": 700, "confidence": 0.97},
+    {"text": "is", "start": 700, "end": 850, "confidence": 0.99},
+    {"text": "a", "start": 850, "end": 950, "confidence": 0.99},
+    {"text": "test", "start": 950, "end": 1200, "confidence": 0.96},
+    {"text": "transcription", "start": 1200, "end": 2000, "confidence": 0.94}
+  ],
+  "utterances": [
+    {
+      "speaker": "A",
+      "text": "Hello, this is a test transcription.",
+      "start": 0,
+      "end": 3500,
+      "confidence": 0.96
+    },
+    {
+      "speaker": "B",
+      "text": "The speaker is discussing various topics including technology and innovation.",
+      "start": 4000,
+      "end": 9000,
+      "confidence": 0.94
+    },
+    {
+      "speaker": "A",
+      "text": "This is a sample transcript used for testing purposes.",
+      "start": 9500,
+      "end": 14000,
+      "confidence": 0.95
+    }
+  ],
+  "chapters": [
+    {
+      "headline": "Introduction",
+      "summary": "The speakers introduce the topic of discussion.",
+      "gist": "Introduction and greeting",
+      "start": 0,
+      "end": 5000
+    },
+    {
+      "headline": "Main Discussion",
+      "summary": "Discussion about technology and innovation topics.",
+      "gist": "Technology discussion",
+      "start": 5001,
+      "end": 14000
+    }
+  ],
+  "summary": "This transcript covers a brief discussion about technology and innovation between two speakers.",
+  "paragraphs": [
+    {
+      "text": "Hello, this is a test transcription. The speaker is discussing various topics.",
+      "start": 0,
+      "end": 9000
+    },
+    {
+      "text": "This is a sample transcript used for testing purposes.",
+      "start": 9500,
+      "end": 14000
+    }
+  ],
+  "sentences": [
+    {"text": "Hello, this is a test transcription.", "start": 0, "end": 3500},
+    {"text": "The speaker is discussing various topics including technology and innovation.", "start": 4000, "end": 9000},
+    {"text": "This is a sample transcript used for testing purposes.", "start": 9500, "end": 14000}
+  ]
+}

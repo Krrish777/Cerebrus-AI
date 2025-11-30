@@ -1,0 +1,46 @@
+# Audio Processing Provider Configuration
+# Provider-specific settings loaded separately from main config.
+# API keys should be set via environment variables, not in this file.
+
+# Default provider to use
+default_provider: "assemblyai"
+
+# AssemblyAI provider settings
+assemblyai:
+  # Environment variable name for API key
+  api_key_env: "ASSEMBLYAI_API_KEY"
+  # Base URL for API (for testing/mocking)
+  base_url: null
+  # Request timeout in seconds
+  timeout: 300
+  # Maximum retries on failure
+  max_retries: 3
+  # Retry delay in seconds
+  retry_delay: 1.0
+
+# Whisper provider settings (future implementation)
+whisper:
+  # Environment variable name for API key
+  api_key_env: "OPENAI_API_KEY"
+  # Model to use: 'whisper-1'
+  model: "whisper-1"
+  # Request timeout in seconds
+  timeout: 300
+
+# Google Speech-to-Text settings (future implementation)
+google:
+  # Environment variable name for credentials file path
+  credentials_env: "GOOGLE_APPLICATION_CREDENTIALS"
+  # Project ID environment variable
+  project_id_env: "GOOGLE_CLOUD_PROJECT"
+  # Request timeout in seconds
+  timeout: 300
+
+# Azure Speech Services settings (future implementation)
+azure:
+  # Environment variable name for API key
+  api_key_env: "AZURE_SPEECH_KEY"
+  # Region environment variable
+  region_env: "AZURE_SPEECH_REGION"
+  # Request timeout in seconds
+  timeout: 300

@@ -1,0 +1,92 @@
+{
+  "sentiment_analysis": [
+    {
+      "text": "Hello, this is a test transcription.",
+      "sentiment": "NEUTRAL",
+      "confidence": 0.85,
+      "start": 0,
+      "end": 3500,
+      "speaker": "A"
+    },
+    {
+      "text": "The speaker is discussing various topics including technology and innovation.",
+      "sentiment": "POSITIVE",
+      "confidence": 0.78,
+      "start": 4000,
+      "end": 9000,
+      "speaker": "B"
+    },
+    {
+      "text": "This is a sample transcript used for testing purposes.",
+      "sentiment": "NEUTRAL",
+      "confidence": 0.82,
+      "start": 9500,
+      "end": 14000,
+      "speaker": "A"
+    }
+  ],
+  "entities": [
+    {
+      "text": "technology",
+      "entity_type": "topic",
+      "start": 5500,
+      "end": 6200
+    },
+    {
+      "text": "innovation",
+      "entity_type": "topic",
+      "start": 6500,
+      "end": 7200
+    }
+  ],
+  "iab_categories": {
+    "summary": {
+      "Technology & Computing": 0.75,
+      "Business and Finance": 0.45,
+      "Education": 0.30
+    },
+    "results": [
+      {
+        "text": "The speaker is discussing various topics including technology and innovation.",
+        "labels": [
+          {"label": "Technology & Computing", "relevance": 0.85},
+          {"label": "Business and Finance", "relevance": 0.55}
+        ],
+        "timestamp": {"start": 4000, "end": 9000}
+      }
+    ]
+  },
+  "content_safety": {
+    "summary": {
+      "safe": true,
+      "flagged_categories": []
+    },
+    "results": [
+      {
+        "text": "Hello, this is a test transcription.",
+        "labels": [],
+        "timestamp": {"start": 0, "end": 3500}
+      }
+    ]
+  },
+  "auto_highlights": {
+    "results": [
+      {
+        "text": "technology and innovation",
+        "rank": 0.95,
+        "count": 1,
+        "timestamps": [
+          {"start": 5500, "end": 7200}
+        ]
+      },
+      {
+        "text": "test transcription",
+        "rank": 0.72,
+        "count": 1,
+        "timestamps": [
+          {"start": 950, "end": 2000}
+        ]
+      }
+    ]
+  }
+}

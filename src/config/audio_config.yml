@@ -1,0 +1,100 @@
+# Audio Processing Configuration
+# This file contains all configuration for the audio processing module.
+# All values should be loaded from this file - no hardcoded values in code.
+
+# Transcription settings
+transcription:
+  # Language code for transcription (ISO 639-1)
+  language_code: "en"
+  # Model to use: 'best', 'nano', 'conformer-2'
+  model: "best"
+  # Polling interval in seconds for checking transcription status
+  polling_interval: 3.0
+
+# Speaker analysis features
+speaker:
+  # Enable speaker diarization
+  enabled: true
+  # Expected number of speakers (null for auto-detect)
+  expected_count: null
+
+# Content analysis features
+features:
+  # Sentiment analysis on transcript segments
+  sentiment_analysis: true
+  # Named entity detection
+  entity_detection: true
+  # Topic/category detection using IAB taxonomy
+  topic_detection: true
+  # Content safety/moderation analysis
+  content_safety: true
+  # Confidence threshold for content safety (0-100)
+  content_safety_confidence: 80
+  # Auto-detect key highlights/phrases
+  auto_highlights: true
+
+# Audio enhancement settings
+enhancement:
+  # Apply noise reduction
+  noise_reduction: true
+  # Automatic punctuation insertion
+  automatic_punctuation: true
+  # Format text (capitalization, numbers)
+  format_text: true
+  # Filter profanity from output
+  filter_profanity: false
+
+# Privacy and PII redaction
+privacy:
+  # Enable PII redaction
+  redact_pii: false
+  # Types of PII to redact
+  redact_policies:
+    - "credit_card_number"
+    - "email_address"
+    - "person_name"
+    - "phone_number"
+  # Also redact from audio file
+  redact_audio: false
+
+# Custom vocabulary for improved accuracy
+vocabulary:
+  # Custom spelling corrections (word -> alternatives)
+  custom_spelling: {}
+  # Words to boost recognition
+  custom_words: []
+  # Boost strength: 'low', 'default', 'high'
+  boost_param: "low"
+
+# Output structure options
+output:
+  # Include individual utterances (speaker turns)
+  include_utterances: true
+  # Include sentence-level segmentation
+  include_sentences: true
+  # Include paragraph-level segmentation
+  include_paragraphs: true
+  # Auto-generate chapters
+  auto_chapters: true
+
+# Summarization settings
+summarization:
+  # Enable AI summarization
+  enabled: true
+  # Summary model: 'informative', 'conversational', 'catchy'
+  model: "informative"
+  # Summary format: 'bullets', 'gist', 'headline', 'paragraph'
+  type: "bullets"
+
+# Chunking configuration for document processing
+chunking:
+  # Maximum chunk length in characters
+  max_length: 1000
+  # Overlap between chunks in characters
+  overlap: 100
+  # Respect speaker boundaries when chunking
+  respect_speakers: true
+  # Respect chapter boundaries when chunking
+  respect_chapters: true
+  # Default strategy: 'speaker', 'chapter', 'semantic'
+  default_strategy: "semantic"
