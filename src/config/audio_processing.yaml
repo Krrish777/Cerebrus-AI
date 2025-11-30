@@ -1,0 +1,86 @@
+# Audio Processing Configuration
+# Core settings for audio transcription and processing
+
+# Core Transcription Settings
+transcription:
+  language_code: "en"
+  model: "best"  # Options: "best", "nano", "conformer-2"
+  polling_interval: 3.0  # Seconds between status checks
+
+# Speaker Analysis Settings
+speaker_analysis:
+  speaker_labels: true
+  speakers_expected: null  # null for auto-detection
+
+# Content Analysis Features
+content_analysis:
+  sentiment_analysis: true
+  entity_detection: true
+  iab_categories: true  # Topic detection
+  content_safety: true
+  content_safety_confidence: 80
+  auto_highlights: true
+
+# Audio Enhancement Settings
+audio_enhancement:
+  noise_reduction: true
+  automatic_punctuation: true
+  format_text: true
+  filter_profanity: false
+
+# Privacy and Redaction Settings
+privacy:
+  redact_pii: false
+  redact_pii_policies:
+    - "credit_card_number"
+    - "email_address"
+    - "person_name"
+    - "phone_number"
+  redact_pii_audio: false
+
+# Custom Vocabulary Settings
+vocabulary:
+  custom_spelling: {}  # Key-value pairs for custom spelling
+  custom_vocabulary: []  # List of custom vocabulary words
+  boost_param: "low"  # Options: "low", "default", "high"
+
+# Output Structure Settings
+output:
+  include_utterances: true
+  include_sentences: true
+  include_paragraphs: true
+  auto_chapters: true
+  summarization: true
+  summary_model: "informative"  # Options: "informative", "conversational", "catchy"
+  summary_type: "bullets"  # Options: "bullets", "gist", "headline", "paragraph"
+
+# Smart Chunking Configuration
+smart_chunking:
+  max_chunk_length: 1000
+  overlap: 100
+  respect_speakers: true
+  respect_chapters: true
+
+# YouTube Processing Settings
+youtube:
+  cleanup_audio: true
+  cache_audio: true
+  audio_quality: "best"  # Options: "best", "worst", or specific format
+  max_duration: null  # Maximum duration in seconds, null for unlimited
+
+# Performance Settings
+performance:
+  enable_timing: true
+  enable_statistics: true
+  enable_progress_tracking: true
+
+# Validation Settings
+validation:
+  validate_inputs: true
+  validate_outputs: true
+  check_file_existence: true
+
+# Error Handling
+error_handling:
+  fail_fast: true
+  continue_on_individual_source_error: true
