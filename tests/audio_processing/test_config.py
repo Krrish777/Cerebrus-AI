@@ -8,7 +8,7 @@ following AGENTS.md principles: deterministic, focused, comprehensive.
 import os
 import pytest
 from pathlib import Path
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
 from src.audio_processing.config import (
     AudioConfigLoader,
@@ -30,7 +30,6 @@ from src.audio_processing.config import (
 )
 from src.audio_processing.exceptions import (
     TranscriptionConfigurationError,
-    ConfigurationLoadError,
 )
 
 
