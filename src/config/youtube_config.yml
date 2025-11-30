@@ -1,0 +1,81 @@
+# YouTube Processing Configuration
+# This file configures YouTube video download, caching, and metadata extraction.
+# Audio transcription settings are loaded from audio_config.yml
+
+youtube_processing:
+  # Download settings for video audio extraction
+  download:
+    temp_dir: "temp/youtube_audio"
+    audio_quality: "best"  # best, worst, or specific format
+    audio_format: "m4a"
+    audio_bitrate: "192"
+    max_file_size_mb: 500
+    timeout_seconds: 300
+    
+  # Cache settings for downloaded audio files
+  cache:
+    enabled: true
+    cache_dir: "cache/youtube_audio"
+    cleanup_after_processing: false
+    max_cache_size_gb: 10
+    cache_ttl_days: 7
+    
+  # URL validation settings
+  validation:
+    allowed_domains:
+      - youtube.com
+      - www.youtube.com
+      - youtu.be
+      - m.youtube.com
+    min_duration_seconds: 5
+    max_duration_seconds: 7200  # 2 hours
+    allow_live_streams: false
+    allow_age_restricted: false
+    
+  # Metadata extraction settings
+  metadata:
+    extract_description: true
+    extract_tags: true
+    extract_categories: true
+    extract_thumbnail_url: true
+    extract_view_count: true
+    extract_like_count: true
+    extract_channel_info: true
+    max_description_length: 5000
+    
+  # Retry settings for failed downloads
+  retry:
+    max_attempts: 3
+    delay_seconds: 5
+    exponential_backoff: true
+    
+  # Reference to audio processing configuration
+  # Audio transcription uses settings from this file
+  audio_config_path: "config/audio_config.yml"
+  
+  # YouTube-specific vocabulary to boost recognition
+  # These terms are added to the audio transcription vocabulary
+  youtube_vocabulary:
+    - YouTube
+    - subscribe
+    - notification
+    - like
+    - comment
+    - channel
+    - playlist
+    - timestamp
+    - description
+    - pinned
+    - livestream
+    - premiere
+    - tutorial
+    - vlog
+    - podcast
+    - intro
+    - outro
+    - thumbnail
+    - algorithm
+    - monetize
+    - sponsor
+    - Patreon
+    - merch
