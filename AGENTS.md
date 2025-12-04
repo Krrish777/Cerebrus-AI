@@ -1,12 +1,14 @@
 ## Operational Rules (Hard Requirements)
 
 ### Do
-1. **All tests** must be written inside `tests/` using a clear, modular structure.  
-2. **Always activate the virtual environment** before executing or generating any runnable code (`source venv/bin/activate` or Windows equivalent).  
-3. **Use logging consistently**. Every Python file must import and use `customlogger` with meaningful log messages.  
-4. **Use `data/` as the sole source of test data**.
-5. **Always use uv as a package manager** 
-5. **Follow all design principles strictly** (see below).  
+1. **All tests** must be written inside `tests/` using a clear, modular structure.
+2. Before writing any test files check the code that you are testing to get a good understanding of its structure and functionality.
+3. **Always activate the virtual environment** before executing or generating any runnable code (`source venv/bin/activate` or Windows equivalent).  
+4. **Use logging consistently**. Every Python file must import and use `customlogger` with meaningful log messages.  
+5. **Use `data/` as the sole source of test data**.
+6. **Always use uv as a package manager** 
+7. **Follow all design principles strictly** (see below).
+8. If using 3rd party libraries, using context7 fetch the current docs and verify usage.  
 
 ### Don’t
 1. Never create or modify files outside the designated directories (`src/`, `tests/`, `data/`, etc.).  

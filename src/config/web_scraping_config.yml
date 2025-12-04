@@ -1,0 +1,53 @@
+web_scraping:
+  scraping:
+    default_provider: "firecrawl"
+    timeout: 30
+    retry_attempts: 3
+    retry_delay: 2
+    user_agent: "CerebrusAI/1.0"
+    
+  providers:
+    firecrawl:
+      api_key_env: "FIRECRAWL_API_KEY"
+      formats: ["markdown"]
+      wait_for_content: true
+      include_links: true
+      
+    playwright:
+      headless: true
+      wait_for_selector: "body"
+      screenshot: false
+      
+  validation:
+    allowed_schemes: ["http", "https"]
+    blocked_domains: []
+    max_url_length: 2048
+    require_valid_tld: true
+    
+  rate_limiting:
+    enabled: true
+    requests_per_minute: 30
+    burst_size: 10
+    
+  cache:
+    enabled: true
+    cache_dir: "cache/web_scraping"
+    ttl_hours: 24
+    max_cache_size_gb: 5
+    
+  processing:
+    # Use existing document processing config
+    use_existing_chunking: true
+    document_config_path: "src/config/document_processing.yaml"
+    
+    # Web-specific processing
+    extract_metadata: true
+    extract_links: true
+    clean_html: true
+    remove_scripts: true
+    
+  content_validation:
+    min_content_length: 100
+    max_content_length: 1000000
+    min_word_count: 10
+    check_content_quality: true
