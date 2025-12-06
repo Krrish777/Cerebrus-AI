@@ -1,0 +1,29 @@
+# Embedding Configuration
+
+embedding:
+  # Provider configuration
+  provider: "haystack"  # Options: haystack, openai, cohere
+  
+  # Model settings
+  model:
+    name: "BAAI/bge-small-en-v1.5"
+    device: null  # auto-detect, or specify: cpu, cuda, mps
+    normalize_embeddings: true
+    prefix: null  # Model-specific prefix
+  
+  # Processing settings
+  processing:
+    batch_size: 32
+    max_retries: 3
+    timeout: 300
+  
+  # Metadata settings
+  metadata:
+    fields_to_embed: []
+    include_in_embedding: false
+  
+  # Logging settings
+  logging:
+    level: "INFO"
+    log_embeddings: false
+    log_model_info: true

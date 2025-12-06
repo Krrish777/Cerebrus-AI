@@ -211,10 +211,14 @@ class TestFirecrawlScraping:
         """Create mock Firecrawl API result."""
         result = MagicMock()
         result.markdown = "# Test Page\n\nThis is test content."
-        result.metadata = MagicMock()
+        result.metadata = MagicMock(spec=['title', 'description'])
         result.metadata.title = "Test Page"
         result.metadata.description = "A test page"
         result.links = ["https://example.com/link1"]
+        # Ensure hasattr works correctly
+        type(result).markdown = property(lambda self: "# Test Page\n\nThis is test content.")
+        type(result.metadata).title = property(lambda self: "Test Page")
+        type(result.metadata).description = property(lambda self: "A test page")
         return result
 
     def test_scrape_success_with_mock(
@@ -225,7 +229,7 @@ class TestFirecrawlScraping:
         """Test successful scraping with mocked Firecrawl."""
         # Mock the _get_app method to return a mock app
         mock_app = MagicMock()
-        mock_app.scrape_url.return_value = mock_firecrawl_result
+        mock_app.scrape.return_value = mock_firecrawl_result
         
         with patch.object(scraper, "_get_app", return_value=mock_app):
             content = scraper._scrape_impl("https://example.com")
@@ -240,7 +244,7 @@ class TestFirecrawlScraping:
     ) -> None:
         """Test handling of timeout errors."""
         mock_app = MagicMock()
-        mock_app.scrape_url.side_effect = TimeoutError("Request timed out")
+        mock_app.scrape.side_effect = TimeoutError("Request timed out")
         
         with patch.object(scraper, "_get_app", return_value=mock_app):
             from src.web_scraping.exceptions import ScrapingTimeoutError
