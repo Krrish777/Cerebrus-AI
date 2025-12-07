@@ -1,0 +1,87 @@
+"""
+Vector Database Configuration YAML File
+
+This file contains all configuration for vector database operations.
+Changes to this file will be automatically picked up by the application.
+
+Following AGENTS.md principles:
+- All configuration externalized (no hard-coded values in code)
+- Comments explain purpose of each setting
+- Sensible defaults for production use
+"""
+
+# Main vector database configuration
+vector_database:
+  # Provider selection: qdrant, pinecone, weaviate
+  provider: qdrant
+  
+  # Storage path for local persistence
+  storage_path: ./storage/qdrant_db
+  
+  # Collection name for document storage
+  collection_name: cerebrus_documents
+  
+  # Embedding vector dimension (must match embedding model)
+  # BAAI/bge-small-en-v1.5: 384
+  # BAAI/bge-base-en-v1.5: 768
+  # BAAI/bge-large-en-v1.5: 1024
+  embedding_dim: 384
+  
+  # Qdrant-specific configuration
+  qdrant:
+    # Whether to recreate index on startup (WARNING: deletes all data)
+    recreate_index: false
+    
+    # Whether to return embeddings in search results
+    return_embedding: true
+    
+    # Whether to wait for API responses (set false for async operations)
+    wait_result_from_api: true
+    
+    # HNSW (Hierarchical Navigable Small World) index configuration
+    # Controls approximate nearest neighbor search performance
+    hnsw:
+      # Number of bi-directional links per element (2-100)
+      # Higher = better recall, more memory, slower indexing
+      m: 16
+      
+      # Size of dynamic candidate list during construction (>= 1)
+      # Higher = better quality index, slower indexing
+      ef_construct: 200
+      
+      # Threshold for switching to full scan (>= 0)
+      # Collections smaller than this use exact search
+      full_scan_threshold: 10000
+    
+    # Vector quantization for memory efficiency
+    quantization:
+      # Enable quantization (reduces memory usage)
+      enabled: false
+      
+      # Quantization type: scalar or product
+      type: scalar
+      
+      # Scalar quantization type: int8 or uint8
+      scalar_type: int8
+      
+      # Quantile for scalar quantization (0.0-1.0)
+      # Higher = better quality, more memory
+      quantile: 0.99
+      
+      # Keep quantized vectors in RAM (vs disk)
+      always_ram: false
+  
+  # Default search configuration
+  search:
+    # Maximum number of results to return (1-1000)
+    top_k: 10
+    
+    # Scale similarity scores to 0-1 range
+    scale_score: true
+    
+    # Minimum similarity score threshold (null = no threshold)
+    # Range: 0.0-1.0, where 1.0 = perfect match
+    score_threshold: null
+    
+    # Return embeddings in search results
+    return_embedding: false

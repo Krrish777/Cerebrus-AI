@@ -6,7 +6,7 @@ embedding:
   
   # Model settings
   model:
-    name: "BAAI/bge-small-en-v1.5"
+    name: "sentence-transformers/all-mpnet-base-v2"
     device: null  # auto-detect, or specify: cpu, cuda, mps
     normalize_embeddings: true
     prefix: null  # Model-specific prefix
